@@ -23,9 +23,9 @@ object InicializadorTablas {
             }
             println("Tablas creadas correctamente.")
         } catch (e: SQLException) {
-            throw SQLException("Error al crear tablas: ${e.message}")
+            throw IllegalArgumentException("Error al crear tablas: ${e.message}")
         } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
+            throw IllegalArgumentException("Error: ${e.message}")
         }finally {
             stmt?.close()
             DatabaseTienda.closeConnection(connection)
