@@ -6,4 +6,5 @@ fun main() {
     val connection = DatabaseTienda.getConnection()
 
     DatabaseTienda.closeConnection(connection)
+
 }
