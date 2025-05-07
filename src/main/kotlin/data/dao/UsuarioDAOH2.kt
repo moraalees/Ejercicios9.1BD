@@ -1,6 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
+import es.prog2425.ejerciciosBD9_1.model.Usuario
 import java.sql.*
 
 class UsuarioDAOH2 : IUsuarioDAO {
@@ -13,6 +14,26 @@ class UsuarioDAOH2 : IUsuarioDAO {
             stmt = connection.prepareStatement(sql)
             stmt.setString(1, nombre)
             stmt.setString(2, email)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al insertar los campos en las tablas", e)
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+            DatabaseTienda.closeConnection(connection)
+        }
+    }
+
+    override fun insertarCampo(usuario: Usuario) {
+        val connection = DatabaseTienda.getConnection()
+        var stmt: Statement? = null
+
+        try{
+            val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
+            stmt = connection.prepareStatement(sql)
+            stmt.setString(1, usuario.nombre)
+            stmt.setString(2, usuario.correo)
             stmt.executeUpdate()
         } catch (e: SQLException) {
             throw SQLException("Error al insertar los campos en las tablas", e)
