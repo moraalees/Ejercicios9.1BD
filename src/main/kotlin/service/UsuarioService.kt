@@ -4,12 +4,29 @@ import es.prog2425.ejerciciosBD9_1.data.dao.UsuarioDAOH2
 import es.prog2425.ejerciciosBD9_1.model.Usuario
 
 class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
+    /**
+     * Añade un nuevo usuario utilizando valores individuales.
+     *
+     * @param nombre Nombre del usuario.
+     * @param correo Dirección de correo electrónico del usuario.
+     *
+     * Valida que el nombre y el correo no estén vacíos antes de llamar al metodo del DAO correspondiente.
+     * Llama al DAO para insertar el nuevo usuario en la base de datos.
+     */
     override fun addUsuario(nombre: String, correo: String) {
         require(nombre.isNotBlank()){ "El nombre no puede estar vacío." }
         require(correo.isNotBlank()){ "El correo no puede estar vacío." }
         dao.insertarCampo(nombre.trim(), correo.trim())
     }
 
+    /**
+     * Añade un nuevo usuario utilizando un objeto `Usuario`.
+     *
+     * @param usuario Objeto que contiene los datos necesarios para registrar un usuario.
+     *
+     * Valida internamente que el nombre y el correo no estén vacíos.
+     * Llama al DAO para insertar el nuevo usuario en la base de datos.
+     */
     override fun addUsuario(usuario: Usuario) {
         require(usuario.nombre.isNotBlank()){ "El nombre no puede estar vacío." }
         require(usuario.correo.isNotBlank()){ "El correo no puede estar vacío." }

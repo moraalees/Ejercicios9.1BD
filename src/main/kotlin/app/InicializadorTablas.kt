@@ -4,6 +4,15 @@ import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import java.sql.*
 
 object InicializadorTablas {
+    /**
+     * Posee una consulta SQL que crea determinadas tablas con sus respectivos campos.
+     * Las tablas incluidas son: Usuario, Producto, Pedido y LineaPedido.
+     *
+     * - Cada sentencia usa `CREATE TABLE IF NOT EXISTS` para evitar errores si la tabla ya existe.
+     * - Las tablas incluyen claves primarias (`PRIMARY KEY`) y relaciones mediante claves foráneas (`FOREIGN KEY`).
+     *
+     * @return Lista de sentencias SQL como cadenas de texto.
+     */
     private fun obtenerTablas(): List<String> {
         return listOf(
             "CREATE TABLE IF NOT EXISTS Usuario (id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE)",
@@ -13,6 +22,16 @@ object InicializadorTablas {
         )
     }
 
+    /**
+     * Crea las tablas de la base de datos ejecutando las consultas SQL por `obtenerTablas()`.
+     *
+     * - Establece una conexión mediante `DatabaseTienda.getConnection()` a la BD.
+     * - Ejecuta cada sentencia SQL con un `Statement`.
+     * - Maneja excepciones SQL y generales.
+     * - Cierra el `Statement` y la conexión al final.
+     *
+     * Esta función debería llamarse una vez al inicializar la aplicación para asegurar que las tablas existen.
+     */
     fun crearTablas() {
         val connection = DatabaseTienda.getConnection()
         var stmt: Statement? = null

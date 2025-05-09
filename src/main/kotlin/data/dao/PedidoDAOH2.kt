@@ -6,6 +6,15 @@ import java.sql.SQLException
 import java.sql.Statement
 
 class PedidoDAOH2 : IPedidoDAO {
+    /**
+     * Crea un nuevo pedido en la base de datos con los valores individuales proporcionados.
+     *
+     * @param idUsuario ID del usuario que realiza el pedido.
+     * @param precio Precio total del pedido.
+     *
+     * Establece una conexión a la base de datos, prepara una consulta SQL con parámetros,
+     * ejecuta la consulta y seguidamente maneja cualquier error que pueda surgir.
+     */
     override fun insertarCampo(idUsuario: Int, precio: Double) {
         val connection = DatabaseTienda.getConnection()
         var stmt: Statement? = null
@@ -26,6 +35,13 @@ class PedidoDAOH2 : IPedidoDAO {
         }
     }
 
+    /**
+     * Crea un nuevo pedido en la base de datos usando una clase `Pedido`.
+     *
+     * @param pedido Clase que contiene toda la información necesaria para insertar en la tabla.
+     *
+     * Funcionalmente igual que el metodo anterior, pero más limpio porque se tiene una clase con los datos agrupados.
+     */
     override fun insertarCampo(pedido: Pedido) {
         val connection = DatabaseTienda.getConnection()
         var stmt: Statement? = null

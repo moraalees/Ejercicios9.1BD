@@ -6,6 +6,16 @@ import java.sql.SQLException
 import java.sql.Statement
 
 class ProductoDAOH2 : IProductoDAO {
+    /**
+     * Crea un nuevo producto en la base de datos con los valores individuales proporcionados.
+     *
+     * @param nombre Nombre del producto.
+     * @param precio Precio unitario del producto.
+     * @param stock Cantidad disponible en inventario.
+     *
+     * Establece una conexión a la base de datos, prepara una consulta SQL con parámetros,
+     * ejecuta la consulta y seguidamente maneja cualquier error que pueda surgir.
+     */
     override fun insertarCampo(nombre: String, precio: Double, stock: Int) {
         val connection = DatabaseTienda.getConnection()
         var stmt: Statement? = null
@@ -27,6 +37,13 @@ class ProductoDAOH2 : IProductoDAO {
         }
     }
 
+    /**
+     * Crea un nuevo producto en la base de datos usando una clase `Producto`.
+     *
+     * @param producto Clase que contiene toda la información necesaria para insertar en la tabla.
+     *
+     * Funciona igual que el metodo anterior, pero más limpio porque se tiene una clase con los datos agrupados.
+     */
     override fun insertarCampo(producto: Producto) {
         val connection = DatabaseTienda.getConnection()
         var stmt: Statement? = null
