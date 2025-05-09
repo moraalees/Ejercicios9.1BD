@@ -48,5 +48,4 @@ fun main() {
     lineaService.addLineaPedido(2, 1, 2, 20.0)
     lineaService.addLineaPedido(3, 2, 1, 150.0)
 
-
 }
