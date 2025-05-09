@@ -1,6 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.service
 
 import es.prog2425.ejerciciosBD9_1.data.dao.LineaPedidoDAOH2
+import es.prog2425.ejerciciosBD9_1.model.LineaPedido
 
 class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoService {
     override fun addLineaPedido(
@@ -14,5 +15,13 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         require(cantidad > 0) { "La cantidad debe de ser mayor que 0." }
         require(precio > 0) { "El precio debe de ser mayor que 0." }
         dao.insertarCampo(idPedido, idProducto, cantidad, precio)
+    }
+
+    override fun addLineaPedido(lineaPedido: LineaPedido) {
+        require(lineaPedido.idPedido > 0) { "El ID debe de ser mayor que 0." }
+        require(lineaPedido.idProducto > 0) { "El ID debe de ser mayor que 0." }
+        require(lineaPedido.cantidad > 0) { "La cantidad debe de ser mayor que 0." }
+        require(lineaPedido.precio > 0) { "El precio debe de ser mayor que 0." }
+        dao.insertarCampo(lineaPedido.idPedido, lineaPedido.idProducto, lineaPedido.cantidad, lineaPedido.precio)
     }
 }
