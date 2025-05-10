@@ -60,4 +60,12 @@ class UsuarioDAOH2 : IUsuarioDAO {
             DatabaseTienda.closeConnection(connection)
         }
     }
+
+    override fun getAll() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getById(id: Int) {
+        TODO("Not yet implemented")
+    }
 }
