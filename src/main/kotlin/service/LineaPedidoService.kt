@@ -42,4 +42,6 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         require(lineaPedido.precio > 0) { "El precio debe de ser mayor que 0." }
         dao.insertarCampo(lineaPedido.idPedido, lineaPedido.idProducto, lineaPedido.cantidad, lineaPedido.precio)
     }
+
+    override fun obtenerLineasPedido(): List<LineaPedido> = dao.getAll()
 }

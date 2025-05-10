@@ -36,4 +36,6 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
         require(producto.stock >= 0){ "El stock debe ser mayor o igual que 0." }
         dao.insertarCampo(producto.nombre.trim(), producto.precio, producto.stock)
     }
+
+    override fun obtenerProductos(): List<Producto> = dao.getAll()
 }

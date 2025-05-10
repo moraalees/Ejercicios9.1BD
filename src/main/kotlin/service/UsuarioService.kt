@@ -33,5 +33,5 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
         dao.insertarCampo(usuario.nombre.trim(), usuario.correo.trim())
     }
 
-
+    override fun obtenerUsuarios(): List<Usuario> = dao.getAll()
 }
