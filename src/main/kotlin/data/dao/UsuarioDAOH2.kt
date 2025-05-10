@@ -61,8 +61,31 @@ class UsuarioDAOH2 : IUsuarioDAO {
         }
     }
 
-    override fun getAll() {
-        TODO("Not yet implemented")
+    override fun getAll(): List<Usuario> {
+        val conn = DatabaseTienda.getConnection()
+        val listaUsuarios = mutableListOf<Usuario>()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+        try {
+            val sql = "SELECT * FROM Usuario"
+            stmt = conn.prepareStatement(sql)
+            rs = stmt.executeQuery()
+            while (rs.next()) {
+                val id = rs.getInt("id")
+                val nombre = rs.getString("nombre")
+                val email = rs.getString("email")
+                listaUsuarios.add(Usuario(id, nombre, email))
+            }
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener los usuarios: ${e.message}")
+        } catch(e: Exception) {
+            throw Exception("Error: ${e.message}")
+        }finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+        return listaUsuarios
     }
 
     override fun getById(id: Int) {

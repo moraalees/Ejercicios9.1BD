@@ -2,6 +2,8 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.Pedido
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
 
@@ -60,5 +62,32 @@ class PedidoDAOH2 : IPedidoDAO {
             stmt?.close()
             DatabaseTienda.closeConnection(connection)
         }
+    }
+
+    override fun getAll(): List<Pedido> {
+        val conn = DatabaseTienda.getConnection()
+        val listaPedidos = mutableListOf<Pedido>()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+        try {
+            val sql = "SELECT * FROM Pedido"
+            stmt = conn.prepareStatement(sql)
+            rs = stmt.executeQuery()
+            while (rs.next()) {
+                val id = rs.getInt("id")
+                val precio = rs.getDouble("precioTotal")
+                val idUsuario = rs.getInt("idusuario")
+                listaPedidos.add(Pedido(id, precio, idUsuario))
+            }
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener los pedidos: ${e.message}")
+        } catch(e: Exception) {
+            throw Exception("Error: ${e.message}")
+        }finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+        return listaPedidos
     }
 }

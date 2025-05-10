@@ -2,6 +2,8 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.LineaPedido
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
 
@@ -66,5 +68,34 @@ class LineaPedidoDAOH2 : ILineaPedidoDAO{
             stmt?.close()
             DatabaseTienda.closeConnection(connection)
         }
+    }
+
+    override fun getAll(): List<LineaPedido> {
+        val conn = DatabaseTienda.getConnection()
+        val listaLineasPedido = mutableListOf<LineaPedido>()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+        try {
+            val sql = "SELECT * FROM Lineapedido"
+            stmt = conn.prepareStatement(sql)
+            rs = stmt.executeQuery()
+            while (rs.next()) {
+                val id = rs.getInt("id")
+                val cantidad = rs.getInt("cantidad")
+                val precio = rs.getDouble("precio")
+                val idPedido = rs.getInt("idPedido")
+                val idProducto = rs.getInt("idProducto")
+                listaLineasPedido.add(LineaPedido(id, cantidad, precio, idPedido, idProducto))
+            }
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener las lineas de pedido: ${e.message}")
+        } catch(e: Exception) {
+            throw Exception("Error: ${e.message}")
+        }finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+        return listaLineasPedido
     }
 }
