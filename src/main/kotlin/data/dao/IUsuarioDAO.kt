@@ -6,6 +6,5 @@ interface IUsuarioDAO {
     fun insertarCampo(nombre: String, email: String)
     fun insertarCampo(usuario: Usuario)
     fun getAll(): List<Usuario>
-    fun getById(id: Int)
     fun getUsuariosByProductoComprado(nombre: String): List<Usuario>
 }

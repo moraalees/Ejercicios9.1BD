@@ -112,8 +112,4 @@ class UsuarioDAOH2 : IUsuarioDAO {
         }
         return usuarios
     }
-
-    override fun getById(id: Int) {
-        TODO("Not yet implemented")
-    }
 }
