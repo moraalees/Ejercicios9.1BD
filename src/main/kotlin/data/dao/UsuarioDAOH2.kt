@@ -88,6 +88,31 @@ class UsuarioDAOH2 : IUsuarioDAO {
         return listaUsuarios
     }
 
+    override fun getUsuariosByProductoComprado(nombreProducto: String): List<Usuario> {
+        val conn = DatabaseTienda.getConnection()
+        val usuarios = mutableListOf<Usuario>()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+        try {
+            val sql = "SELECT DISTINCT U.id, U.nombre, U.email FROM Usuario U JOIN Pedido P ON U.id = P.idUsuario JOIN LineaPedido LP ON P.id = LP.idPedido JOIN Producto PR ON LP.idProducto = PR.id WHERE PR.nombre = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setString(1, nombreProducto)
+            rs = stmt.executeQuery()
+            while (rs.next()) {
+                usuarios.add(Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email")))
+            }
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener usuarios que compraron '$nombreProducto': ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+        return usuarios
+    }
+
     override fun getById(id: Int) {
         TODO("Not yet implemented")
     }

@@ -6,4 +6,5 @@ interface ILineaPedidoDAO {
     fun insertarCampo(idPedido: Int, idProducto: Int, cantidad: Int, precio: Double)
     fun insertarCampo(lineaPedido: LineaPedido)
     fun getAll(): List<LineaPedido>
+    fun getLineasByPedido(idPedido: Int): List<LineaPedido>
 }

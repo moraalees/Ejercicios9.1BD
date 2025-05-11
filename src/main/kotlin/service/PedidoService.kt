@@ -34,4 +34,9 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
     }
 
     override fun obtenerPedidos(): List<Pedido> = dao.getAll()
+
+    override fun obtenerPedidoPorUsuario(nombre: String): Double{
+        require(nombre.isNotBlank()) { "El nombre no puede estar vacío" }
+        return dao.getTotalImporteByNombreUsuario(nombre)
+    }
 }

@@ -34,4 +34,9 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
     }
 
     override fun obtenerUsuarios(): List<Usuario> = dao.getAll()
+
+    override fun obtenerUsuarioPorProductoComprado(nombre: String): List<Usuario>{
+        require(nombre.isNotBlank()){ "El nombre del producto no puede estar vacío." }
+        return dao.getUsuariosByProductoComprado(nombre)
+    }
 }

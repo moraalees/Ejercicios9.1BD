@@ -6,4 +6,5 @@ interface IPedidoDAO {
     fun insertarCampo(idUsuario: Int, precio: Double)
     fun insertarCampo(pedido: Pedido)
     fun getAll(): List<Pedido>
+    fun getTotalImporteByNombreUsuario(nombre: String): Double
 }

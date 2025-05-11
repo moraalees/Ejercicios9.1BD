@@ -6,4 +6,5 @@ interface ILineaPedidoService {
     fun addLineaPedido(idPedido: Int, idProducto: Int, cantidad: Int, precio: Double)
     fun addLineaPedido(lineaPedido: LineaPedido)
     fun obtenerLineasPedido(): List<LineaPedido>
+    fun obtenerLineaPedidoByPedidoId(id: Int): List<LineaPedido>
 }

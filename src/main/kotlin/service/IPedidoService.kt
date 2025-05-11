@@ -6,4 +6,5 @@ interface IPedidoService {
     fun addPedido(idUsuario: Int, precio: Double)
     fun addPedido(pedido: Pedido)
     fun obtenerPedidos(): List<Pedido>
+    fun obtenerPedidoPorUsuario(nombre: String): Double
 }

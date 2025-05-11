@@ -90,4 +90,28 @@ class PedidoDAOH2 : IPedidoDAO {
         }
         return listaPedidos
     }
+
+    override fun getTotalImporteByNombreUsuario(nombre: String): Double {
+        val conn = DatabaseTienda.getConnection()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+        try {
+            val sql = "SELECT SUM(P.precioTotal) AS total FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.nombre = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setString(1, nombre)
+            rs = stmt.executeQuery()
+            if (rs.next()) {
+                return rs.getDouble("total")
+            }
+        } catch (e: SQLException) {
+            throw SQLException("Error al calcular el total del usuario: ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+        return 0.0
+    }
 }

@@ -98,4 +98,37 @@ class LineaPedidoDAOH2 : ILineaPedidoDAO{
         }
         return listaLineasPedido
     }
+
+    override fun getLineasByPedido(idPedido: Int): List<LineaPedido> {
+        val conn = DatabaseTienda.getConnection()
+        val lineas = mutableListOf<LineaPedido>()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+        try {
+            val sql = "SELECT * FROM LineaPedido WHERE idPedido = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setInt(1, idPedido)
+            rs = stmt.executeQuery()
+            while (rs.next()) {
+                lineas.add(
+                    LineaPedido(
+                        rs.getInt("id"),
+                        rs.getInt("cantidad"),
+                        rs.getDouble("precio"),
+                        rs.getInt("idPedido"),
+                        rs.getInt("idProducto")
+                    )
+                )
+            }
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener líneas del pedido: ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+        return lineas
+    }
 }

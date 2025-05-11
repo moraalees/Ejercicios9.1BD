@@ -44,4 +44,9 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
     }
 
     override fun obtenerLineasPedido(): List<LineaPedido> = dao.getAll()
+
+    override fun obtenerLineaPedidoByPedidoId(id: Int): List<LineaPedido> {
+        require(id > 0){ "El id debe ser mayor que 0." }
+        return dao.getLineasByPedido(id)
+    }
 }
