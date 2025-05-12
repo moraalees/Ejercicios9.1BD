@@ -61,6 +61,13 @@ class UsuarioDAOH2 : IUsuarioDAO {
         }
     }
 
+    /**
+     * Obtiene todos los usuarios registrados en la base de datos.
+     *
+     * @return Una lista de objetos [Usuario] con todos los usuarios encontrados.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado.
+     */
     override fun getAll(): List<Usuario> {
         val conn = DatabaseTienda.getConnection()
         val listaUsuarios = mutableListOf<Usuario>()
@@ -88,6 +95,14 @@ class UsuarioDAOH2 : IUsuarioDAO {
         return listaUsuarios
     }
 
+    /**
+     * Obtiene los usuarios que hayan comprado un producto específico por nombre.
+     *
+     * @param nombreProducto El nombre del producto que se desea buscar.
+     * @return Una lista de objetos [Usuario] que han comprado el producto especificado.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado.
+     */
     override fun getUsuariosByProductoComprado(nombreProducto: String): List<Usuario> {
         val conn = DatabaseTienda.getConnection()
         val usuarios = mutableListOf<Usuario>()

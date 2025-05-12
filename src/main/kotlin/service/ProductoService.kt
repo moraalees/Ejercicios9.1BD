@@ -37,5 +37,10 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
         dao.insertarCampo(producto.nombre.trim(), producto.precio, producto.stock)
     }
 
+    /**
+     * Recupera todos los productos disponibles en la base de datos.
+     *
+     * @return Una lista de objetos [Producto] que representan todos los productos existentes.
+     */
     override fun obtenerProductos(): List<Producto> = dao.getAll()
 }

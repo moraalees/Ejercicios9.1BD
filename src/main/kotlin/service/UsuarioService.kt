@@ -33,8 +33,20 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
         dao.insertarCampo(usuario.nombre.trim(), usuario.correo.trim())
     }
 
+    /**
+     * Recupera todos los usuarios registrados en la base de datos.
+     *
+     * @return Una lista de objetos [Usuario] que representan todos los usuarios.
+     */
     override fun obtenerUsuarios(): List<Usuario> = dao.getAll()
 
+    /**
+     * Obtiene una lista de usuarios que han comprado un producto específico.
+     *
+     * @param nombre Nombre del producto que se desea consultar.
+     * @return Lista de objetos [Usuario] que han comprado el producto indicado.
+     * @throws IllegalArgumentException Si el nombre del producto está vacío o en blanco.
+     */
     override fun obtenerUsuarioPorProductoComprado(nombre: String): List<Usuario>{
         require(nombre.isNotBlank()){ "El nombre del producto no puede estar vacío." }
         return dao.getUsuariosByProductoComprado(nombre)

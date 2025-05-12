@@ -70,6 +70,13 @@ class LineaPedidoDAOH2 : ILineaPedidoDAO{
         }
     }
 
+    /**
+     * Obtiene todas las líneas de pedido almacenadas en la base de datos.
+     *
+     * @return Una lista con todos los objetos [LineaPedido] encontrados.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado.
+     */
     override fun getAll(): List<LineaPedido> {
         val conn = DatabaseTienda.getConnection()
         val listaLineasPedido = mutableListOf<LineaPedido>()
@@ -99,6 +106,14 @@ class LineaPedidoDAOH2 : ILineaPedidoDAO{
         return listaLineasPedido
     }
 
+    /**
+     * Obtiene todas las líneas de pedido asociadas a un pedido específico.
+     *
+     * @param idPedido El identificador del pedido cuyas líneas se desean consultar.
+     * @return Una lista de objetos [LineaPedido] correspondientes al pedido indicado.
+     * @throws SQLException Si ocurre un error durante la ejecución de la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado.
+     */
     override fun getLineasByPedido(idPedido: Int): List<LineaPedido> {
         val conn = DatabaseTienda.getConnection()
         val lineas = mutableListOf<LineaPedido>()

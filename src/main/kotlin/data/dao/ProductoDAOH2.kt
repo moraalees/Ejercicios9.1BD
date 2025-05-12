@@ -67,6 +67,13 @@ class ProductoDAOH2 : IProductoDAO {
         }
     }
 
+    /**
+     * Obtiene todos los productos registrados en la base de datos.
+     *
+     * @return Una lista de objetos [Producto] con la información de cada producto.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado durante la operación.
+     */
     override fun getAll(): List<Producto> {
         val conn = DatabaseTienda.getConnection()
         val listaProductos = mutableListOf<Producto>()

@@ -33,8 +33,20 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         dao.insertarCampo(pedido.idUsuario, pedido.precioTotal)
     }
 
+    /**
+     * Recupera todos los pedidos almacenados en la base de datos.
+     *
+     * @return Una lista de objetos [Pedido] que representan todos los pedidos existentes.
+     */
     override fun obtenerPedidos(): List<Pedido> = dao.getAll()
 
+    /**
+     * Obtiene el importe total de todos los pedidos realizados por un usuario específico.
+     *
+     * @param nombre Nombre del usuario del cual se desea obtener el total de sus pedidos.
+     * @return Suma total del importe de los pedidos realizados por el usuario.
+     * @throws IllegalArgumentException Si el nombre está vacío o en blanco.
+     */
     override fun obtenerPedidoPorUsuario(nombre: String): Double{
         require(nombre.isNotBlank()) { "El nombre no puede estar vacío" }
         return dao.getTotalImporteByNombreUsuario(nombre)

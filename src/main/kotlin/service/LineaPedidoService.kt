@@ -43,8 +43,22 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         dao.insertarCampo(lineaPedido.idPedido, lineaPedido.idProducto, lineaPedido.cantidad, lineaPedido.precio)
     }
 
+    /**
+     * Obtiene todas las líneas de pedido registradas en la base de datos.
+     *
+     * @return Una lista de objetos [LineaPedido].
+     *
+     * Llama al DAO para la obtención de líneas.
+     */
     override fun obtenerLineasPedido(): List<LineaPedido> = dao.getAll()
 
+    /**
+     * Obtiene todas las líneas de pedido asociadas a un pedido específico.
+     *
+     * @param id Identificador del pedido. Debe ser mayor que 0.
+     * @return Lista de objetos [LineaPedido] correspondientes al pedido indicado.
+     * @throws IllegalArgumentException Si el ID es menor o igual a 0.
+     */
     override fun obtenerLineaPedidoByPedidoId(id: Int): List<LineaPedido> {
         require(id > 0){ "El id debe ser mayor que 0." }
         return dao.getLineasByPedido(id)

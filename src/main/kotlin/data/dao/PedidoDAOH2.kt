@@ -64,6 +64,13 @@ class PedidoDAOH2 : IPedidoDAO {
         }
     }
 
+    /**
+     * Obtiene todos los pedidos registrados en la base de datos.
+     *
+     * @return Una lista de objetos [Pedido] con todos los pedidos encontrados.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado.
+     */
     override fun getAll(): List<Pedido> {
         val conn = DatabaseTienda.getConnection()
         val listaPedidos = mutableListOf<Pedido>()
@@ -91,6 +98,15 @@ class PedidoDAOH2 : IPedidoDAO {
         return listaPedidos
     }
 
+    /**
+     * Calcula el importe total de los pedidos realizados por un usuario con un nombre específico.
+     *
+     * @param nombre El nombre del usuario por el cual se desea calcular el total de sus pedidos.
+     * @return El total acumulado (suma) de los precios de los pedidos realizados por ese usuario.
+     *         Si el usuario no tiene pedidos o no existe, se retorna 0.0.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     * @throws Exception Para cualquier otro tipo de error inesperado.
+     */
     override fun getTotalImporteByNombreUsuario(nombre: String): Double {
         val conn = DatabaseTienda.getConnection()
         var stmt: PreparedStatement? = null
