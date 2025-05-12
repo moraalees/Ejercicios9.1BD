@@ -11,6 +11,7 @@ import es.prog2425.ejerciciosBD9_1.service.UsuarioService
 
 fun main() {
     val nombre = "Cornelio Ramírez"
+    val precio = 24.99
 
     val usuarioDao = UsuarioDAOH2()
     val usuarioService = UsuarioService(usuarioDao)
@@ -23,5 +24,7 @@ fun main() {
 
     //Eliminar el usuario Cornelio
     usuarioService.eliminarUsuario(nombre)
+    //Eliminar el producto de 24.99
+    productoService.eliminarProducto(precio)
 
 }

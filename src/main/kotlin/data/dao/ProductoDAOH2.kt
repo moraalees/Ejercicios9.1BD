@@ -2,10 +2,7 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.Producto
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
-import java.sql.Statement
+import java.sql.*
 
 class ProductoDAOH2 : IProductoDAO {
     /**
@@ -100,5 +97,23 @@ class ProductoDAOH2 : IProductoDAO {
             DatabaseTienda.closeConnection(conn)
         }
         return listaProductos
+    }
+
+    override fun deleteByPrecio(precio: Double) {
+        var conn = DatabaseTienda.getConnection()
+        var stmt: PreparedStatement? = null
+        try{
+            val sql = "DELETE FROM Producto WHERE precio = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setDouble(1, precio)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al eliminar el producto en la base de datos: ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
     }
 }

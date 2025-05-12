@@ -43,4 +43,9 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
      * @return Una lista de objetos [Producto] que representan todos los productos existentes.
      */
     override fun obtenerProductos(): List<Producto> = dao.getAll()
+
+    override fun eliminarProducto(precio: Double) {
+        require(precio > 0){ "El precio debe ser mayor que 0." }
+        dao.deleteByPrecio(precio)
+    }
 }

@@ -6,4 +6,5 @@ interface IProductoDAO {
     fun insertarCampo(nombre: String, precio: Double, stock: Int)
     fun insertarCampo(producto: Producto)
     fun getAll(): List<Producto>
+    fun deleteByPrecio(precio: Double)
 }
