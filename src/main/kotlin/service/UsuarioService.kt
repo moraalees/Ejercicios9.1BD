@@ -51,4 +51,9 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
         require(nombre.isNotBlank()){ "El nombre del producto no puede estar vacío." }
         return dao.getUsuariosByProductoComprado(nombre)
     }
+
+    override fun eliminarUsuario(nombre: String) {
+        require(nombre.isNotBlank()){ "El nombre del usuario no puede estar vacío." }
+        dao.deleteByName(nombre)
+    }
 }

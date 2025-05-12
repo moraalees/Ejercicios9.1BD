@@ -127,4 +127,22 @@ class UsuarioDAOH2 : IUsuarioDAO {
         }
         return usuarios
     }
+
+    override fun deleteByName(nombre: String){
+        var conn = DatabaseTienda.getConnection()
+        var stmt: PreparedStatement? = null
+        try{
+            val sql = "DELETE FROM Usuario WHERE nombre = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setString(1, nombre)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al eliminar usuario '$nombre' en la base de datos: ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+    }
 }

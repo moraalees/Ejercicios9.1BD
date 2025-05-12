@@ -7,4 +7,5 @@ interface IUsuarioService {
     fun addUsuario(usuario: Usuario)
     fun obtenerUsuarios(): List<Usuario>
     fun obtenerUsuarioPorProductoComprado(nombre: String): List<Usuario>
+    fun eliminarUsuario(nombre: String)
 }
