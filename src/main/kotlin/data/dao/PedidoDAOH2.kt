@@ -130,4 +130,28 @@ class PedidoDAOH2 : IPedidoDAO {
         }
         return 0.0
     }
+
+    override fun deletePedidoConLineas(id: Int) {
+        var conn = DatabaseTienda.getConnection()
+        var stmt: PreparedStatement? = null
+        try {
+            var sql = "DELETE FROM LineaPedido WHERE idPedido = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setInt(1, id)
+            stmt.executeUpdate()
+
+            sql = "DELETE FROM Pedido WHERE id = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setInt(1, id)
+            stmt.executeUpdate()
+
+        } catch (e: SQLException) {
+            throw SQLException("Error al eliminar el pedido con id $id: ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+    }
 }

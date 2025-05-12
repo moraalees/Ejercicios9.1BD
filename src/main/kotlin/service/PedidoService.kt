@@ -51,4 +51,9 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         require(nombre.isNotBlank()) { "El nombre no puede estar vacío" }
         return dao.getTotalImporteByNombreUsuario(nombre)
     }
+
+    override fun eliminarPedidoConLinea(id: Int) {
+        require(id > 0) { "El id debe ser mayor que 0." }
+        dao.deletePedidoConLineas(id)
+    }
 }
