@@ -10,6 +10,9 @@ import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
 
 fun main() {
+    val producto = "Abanico"
+    val nuevoPrecio = 69.42
+
     val usuarioDao = UsuarioDAOH2()
     val usuarioService = UsuarioService(usuarioDao)
     val productoDao = ProductoDAOH2()
@@ -18,4 +21,7 @@ fun main() {
     val pedidoService = PedidoService(pedidoDao)
     val lineaPedidoDao = LineaPedidoDAOH2()
     val lineaPedidoService = LineaPedidoService(lineaPedidoDao)
+
+    //Aquí se modifica el precio del abanico
+    productoService.modificarProducto(producto, nuevoPrecio)
 }

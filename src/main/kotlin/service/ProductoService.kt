@@ -51,7 +51,13 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
      * @throws IllegalArgumentException Si el precio no es mayor que 0.
      */
     override fun eliminarProducto(precio: Double) {
-        require(precio > 0){ "El precio debe ser mayor que 0." }
+        require(precio > 0){ "El precio debe ser mayor que 0 €." }
         dao.deleteByPrecio(precio)
+    }
+
+    override fun modificarProducto(nombre: String, precio: Double) {
+        require(nombre.isNotBlank()){ "El nombre no puede estar vacío" }
+        require(precio > 0) { "El precio no puede ser menor o igual que 0 €" }
+        dao.modifyProducto(nombre, precio)
     }
 }

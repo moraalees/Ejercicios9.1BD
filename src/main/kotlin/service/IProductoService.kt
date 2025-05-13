@@ -7,4 +7,5 @@ interface IProductoService {
     fun addProducto(producto: Producto)
     fun obtenerProductos(): List<Producto>
     fun eliminarProducto(precio: Double)
+    fun modificarProducto(nombre: String, precio: Double)
 }

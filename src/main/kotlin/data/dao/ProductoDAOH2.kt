@@ -125,4 +125,24 @@ class ProductoDAOH2 : IProductoDAO {
             DatabaseTienda.closeConnection(conn)
         }
     }
+
+
+    override fun modifyProducto(nombre: String, nuevoPrecio: Double) {
+        var conn = DatabaseTienda.getConnection()
+        var stmt: PreparedStatement? = null
+        try {
+            val sql = "UPDATE Producto SET precio = ? WHERE nombre = ?"
+            stmt = conn.prepareStatement(sql)
+            stmt.setDouble(1, nuevoPrecio)
+            stmt.setString(2, nombre)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al actualizar el precio del producto '$nombre': ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+    }
 }
