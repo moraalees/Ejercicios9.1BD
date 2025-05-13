@@ -147,6 +147,14 @@ class LineaPedidoDAOH2 : ILineaPedidoDAO{
         return lineas
     }
 
+    /**
+     * Modifica la línea de pedido con el ID especificado, actualizando tanto el producto como el precio.
+     *
+     * @param id ID de la línea de pedido a modificar.
+     * @param idProducto ID del nuevo producto que se asignará a la línea de pedido.
+     * @throws SQLException Si no se encuentra el producto o si ocurre un error durante la actualización.
+     * @throws Exception Para otros errores no controlados.
+     */
     override fun modifyProductoYPrecioPorLinea(id: Int, idProducto: Int) {
         val conn = DatabaseTienda.getConnection()
         var stmt: PreparedStatement? = null

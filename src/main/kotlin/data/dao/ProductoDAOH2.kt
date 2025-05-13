@@ -126,7 +126,14 @@ class ProductoDAOH2 : IProductoDAO {
         }
     }
 
-
+    /**
+     * Actualiza el precio de un producto existente en la base de datos.
+     *
+     * @param nombre Nombre del producto que se desea modificar.
+     * @param nuevoPrecio Nuevo precio que se asignará al producto.
+     * @throws SQLException Si ocurre un error durante la ejecución de la consulta SQL.
+     * @throws Exception Para otros errores inesperados.
+     */
     override fun modifyProducto(nombre: String, nuevoPrecio: Double) {
         var conn = DatabaseTienda.getConnection()
         var stmt: PreparedStatement? = null

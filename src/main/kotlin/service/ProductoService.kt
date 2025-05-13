@@ -55,6 +55,13 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
         dao.deleteByPrecio(precio)
     }
 
+    /**
+     * Modifica el precio de un producto identificado por su nombre.
+     *
+     * @param nombre Nombre del producto que se desea actualizar.
+     * @param precio Nuevo precio que se asignará al producto.
+     * @throws IllegalArgumentException Si el nombre está vacío o si el precio es menor o igual que 0.
+     */
     override fun modificarProducto(nombre: String, precio: Double) {
         require(nombre.isNotBlank()){ "El nombre no puede estar vacío" }
         require(precio > 0) { "El precio no puede ser menor o igual que 0 €" }

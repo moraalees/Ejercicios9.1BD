@@ -64,6 +64,15 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         return dao.getLineasByPedido(id)
     }
 
+    /**
+     * Modifica la línea de pedido especificada, actualizando su producto y precio.
+     *
+     * El nuevo precio se calcula automáticamente como el doble del precio actual del nuevo producto.
+     *
+     * @param id ID de la línea de pedido que se desea actualizar.
+     * @param idProducto ID del nuevo producto que se asignará a la línea de pedido.
+     * @throws IllegalArgumentException Si el ID de la línea o el ID del producto no es mayor que 0.
+     */
     override fun modificarProductoYPrecioPorLinea(id: Int, idProducto: Int) {
         require(id > 0){ "El id debe ser mayor que 0." }
         require(idProducto > 0){ "El id debe ser mayor que 0." }
