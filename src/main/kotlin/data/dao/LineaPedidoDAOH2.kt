@@ -146,4 +146,41 @@ class LineaPedidoDAOH2 : ILineaPedidoDAO{
         }
         return lineas
     }
+
+    override fun modifyProductoYPrecioPorLinea(id: Int, idProducto: Int) {
+        val conn = DatabaseTienda.getConnection()
+        var stmt: PreparedStatement? = null
+        var rs: ResultSet? = null
+
+        try {
+            val selectSql = "SELECT precio FROM Producto WHERE id = ?"
+            stmt = conn.prepareStatement(selectSql)
+            stmt.setInt(1, idProducto)
+            rs = stmt.executeQuery()
+
+            if (rs.next()) {
+                val precioAbanico = rs.getDouble("precio")
+                rs.close()
+                stmt.close()
+
+                val updateSql = "UPDATE LineaPedido SET idProducto = ?, precio = ? WHERE id = ?"
+                stmt = conn.prepareStatement(updateSql)
+                stmt.setInt(1, idProducto)
+                stmt.setDouble(2, precioAbanico * 2)
+                stmt.setInt(3, id)
+
+            } else {
+                throw SQLException("No se encontró un producto con id $idProducto.")
+            }
+
+        } catch (e: SQLException) {
+            throw SQLException("Error al modificar la línea de pedido con id $id: ${e.message}")
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            rs?.close()
+            stmt?.close()
+            DatabaseTienda.closeConnection(conn)
+        }
+    }
 }

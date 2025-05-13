@@ -63,4 +63,10 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         require(id > 0){ "El id debe ser mayor que 0." }
         return dao.getLineasByPedido(id)
     }
+
+    override fun modificarProductoYPrecioPorLinea(id: Int, idProducto: Int) {
+        require(id > 0){ "El id debe ser mayor que 0." }
+        require(idProducto > 0){ "El id debe ser mayor que 0." }
+        dao.modifyProductoYPrecioPorLinea(id, idProducto)
+    }
 }
