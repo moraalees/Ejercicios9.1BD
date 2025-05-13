@@ -52,6 +52,12 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         return dao.getTotalImporteByNombreUsuario(nombre)
     }
 
+    /**
+     * Elimina un pedido específico junto con todas sus líneas asociadas en la base de datos.
+     *
+     * @param id ID del pedido que se desea eliminar.
+     * @throws IllegalArgumentException Si el ID proporcionado no es mayor que 0.
+     */
     override fun eliminarPedidoConLinea(id: Int) {
         require(id > 0) { "El id debe ser mayor que 0." }
         dao.deletePedidoConLineas(id)

@@ -44,6 +44,12 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
      */
     override fun obtenerProductos(): List<Producto> = dao.getAll()
 
+    /**
+     * Elimina un producto de la base de datos según su precio.
+     *
+     * @param precio Precio del producto que se desea eliminar.
+     * @throws IllegalArgumentException Si el precio no es mayor que 0.
+     */
     override fun eliminarProducto(precio: Double) {
         require(precio > 0){ "El precio debe ser mayor que 0." }
         dao.deleteByPrecio(precio)

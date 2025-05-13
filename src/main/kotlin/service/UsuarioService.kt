@@ -52,6 +52,12 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
         return dao.getUsuariosByProductoComprado(nombre)
     }
 
+    /**
+     * Elimina un usuario de la base de datos según su nombre.
+     *
+     * @param nombre Nombre del usuario que se desea eliminar.
+     * @throws IllegalArgumentException Si el nombre está vacío o en blanco.
+     */
     override fun eliminarUsuario(nombre: String) {
         require(nombre.isNotBlank()){ "El nombre del usuario no puede estar vacío." }
         dao.deleteByName(nombre)

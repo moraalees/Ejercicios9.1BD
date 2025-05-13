@@ -99,6 +99,15 @@ class ProductoDAOH2 : IProductoDAO {
         return listaProductos
     }
 
+    /**
+     * Elimina de la base de datos todos los productos cuyo precio sea igual al especificado.
+     *
+     * Este metodo ejecuta  sobre la tabla `Producto` filtrando por el campo `precio` para así eliminar el producto.
+     *
+     * @param precio Precio de los productos que se desean eliminar.
+     * @throws SQLException Si ocurre un error al ejecutar la sentencia SQL.
+     * @throws Exception Si ocurre cualquier otro tipo de error.
+     */
     override fun deleteByPrecio(precio: Double) {
         var conn = DatabaseTienda.getConnection()
         var stmt: PreparedStatement? = null

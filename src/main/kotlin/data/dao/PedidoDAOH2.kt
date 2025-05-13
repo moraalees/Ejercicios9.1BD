@@ -131,6 +131,17 @@ class PedidoDAOH2 : IPedidoDAO {
         return 0.0
     }
 
+    /**
+     * Elimina un pedido de la base de datos junto con todas sus líneas de pedido asociadas.
+     *
+     * Este metodo realiza dos operaciones:
+     * 1. Elimina todas las entradas de la tabla `LineaPedido` que correspondan al ID del pedido.
+     * 2. Elimina la entrada correspondiente en la tabla `Pedido`.
+     *
+     * @param id Identificador del pedido que se desea eliminar.
+     * @throws SQLException Si ocurre un error al ejecutar las sentencias SQL.
+     * @throws Exception Si ocurre cualquier otro tipo de error.
+     */
     override fun deletePedidoConLineas(id: Int) {
         var conn = DatabaseTienda.getConnection()
         var stmt: PreparedStatement? = null

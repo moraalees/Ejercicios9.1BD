@@ -128,6 +128,15 @@ class UsuarioDAOH2 : IUsuarioDAO {
         return usuarios
     }
 
+    /**
+     * Elimina de la base de datos al usuario cuyo nombre coincida con el especificado.
+     *
+     * Esta operación ejecuta una sentencia la tabla `Usuario` usando el nombre como filtro y así borrando este mismo.
+     *
+     * @param nombre El nombre del usuario que se desea eliminar.
+     * @throws SQLException Si ocurre un error relacionado con la base de datos.
+     * @throws Exception Si ocurre cualquier otro tipo de error inesperado.
+     */
     override fun deleteByName(nombre: String){
         var conn = DatabaseTienda.getConnection()
         var stmt: PreparedStatement? = null
