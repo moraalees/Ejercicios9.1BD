@@ -1,155 +1,70 @@
 package es.prog2425.ejerciciosBD9_1.data.dao
 
-import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.Producto
-import java.sql.*
+import javax.sql.DataSource
 
-class ProductoDAOH2 : IProductoDAO {
-    /**
-     * Crea un nuevo producto en la base de datos con los valores individuales proporcionados.
-     *
-     * @param nombre Nombre del producto.
-     * @param precio Precio unitario del producto.
-     * @param stock Cantidad disponible en inventario.
-     *
-     * Establece una conexión a la base de datos, prepara una consulta SQL con parámetros,
-     * ejecuta la consulta y seguidamente maneja cualquier error que pueda surgir.
-     */
+class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
     override fun insertarCampo(nombre: String, precio: Double, stock: Int) {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
-
-        try{
-            val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
-            stmt = connection.prepareStatement(sql)
-            stmt.setString(1, nombre)
-            stmt.setDouble(2, precio)
-            stmt.setInt(3, stock)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al insertar los campos en las tablas", e)
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(connection)
-        }
-    }
-
-    /**
-     * Crea un nuevo producto en la base de datos usando una clase `Producto`.
-     *
-     * @param producto Clase que contiene toda la información necesaria para insertar en la tabla.
-     *
-     * Funciona igual que el metodo anterior, pero más limpio porque se tiene una clase con los datos agrupados.
-     */
-    override fun insertarCampo(producto: Producto) {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
-
-        try{
-            val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
-            stmt = connection.prepareStatement(sql)
-            stmt.setString(1, producto.nombre)
-            stmt.setDouble(2, producto.precio)
-            stmt.setInt(3, producto.stock)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al insertar los campos en las tablas", e)
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(connection)
-        }
-    }
-
-    /**
-     * Obtiene todos los productos registrados en la base de datos.
-     *
-     * @return Una lista de objetos [Producto] con la información de cada producto.
-     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
-     * @throws Exception Para cualquier otro tipo de error inesperado durante la operación.
-     */
-    override fun getAll(): List<Producto> {
-        val conn = DatabaseTienda.getConnection()
-        val listaProductos = mutableListOf<Producto>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT * FROM Producto"
-            stmt = conn.prepareStatement(sql)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                val id = rs.getInt("id")
-                val nombre = rs.getString("nombre")
-                val precio = rs.getDouble("precio")
-                val stock = rs.getInt("stock")
-                listaProductos.add(Producto(id, nombre, precio, stock))
+        val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, nombre)
+                stmt.setDouble(2, precio)
+                stmt.setInt(3, stock)
+                stmt.executeUpdate()
             }
-        } catch (e: SQLException) {
-            throw SQLException("Error al obtener los productos: ${e.message}")
-        } catch(e: Exception) {
-            throw Exception("Error: ${e.message}")
-        }finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+        }
+    }
+
+    override fun insertarCampo(producto: Producto) {
+        val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, producto.nombre)
+                stmt.setDouble(2, producto.precio)
+                stmt.setInt(3, producto.stock)
+                stmt.executeUpdate()
+            }
+        }
+    }
+
+    override fun getAll(): List<Producto> {
+        val listaProductos = mutableListOf<Producto>()
+        val sql = "SELECT * FROM Producto"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        val id = rs.getInt("id")
+                        val nombre = rs.getString("nombre")
+                        val precio = rs.getDouble("precio")
+                        val stock = rs.getInt("stock")
+                        listaProductos.add(Producto(id, nombre, precio, stock))
+                    }
+                }
+            }
         }
         return listaProductos
     }
 
-    /**
-     * Elimina de la base de datos todos los productos cuyo precio sea igual al especificado.
-     *
-     * Este metodo ejecuta  sobre la tabla `Producto` filtrando por el campo `precio` para así eliminar el producto.
-     *
-     * @param precio Precio de los productos que se desean eliminar.
-     * @throws SQLException Si ocurre un error al ejecutar la sentencia SQL.
-     * @throws Exception Si ocurre cualquier otro tipo de error.
-     */
     override fun deleteByPrecio(precio: Double) {
-        var conn = DatabaseTienda.getConnection()
-        var stmt: PreparedStatement? = null
-        try{
-            val sql = "DELETE FROM Producto WHERE precio = ?"
-            stmt = conn.prepareStatement(sql)
-            stmt.setDouble(1, precio)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al eliminar el producto en la base de datos: ${e.message}")
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+        val sql = "DELETE FROM Producto WHERE precio = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setDouble(1, precio)
+                stmt.executeUpdate()
+            }
         }
     }
 
-    /**
-     * Actualiza el precio de un producto existente en la base de datos.
-     *
-     * @param nombre Nombre del producto que se desea modificar.
-     * @param nuevoPrecio Nuevo precio que se asignará al producto.
-     * @throws SQLException Si ocurre un error durante la ejecución de la consulta SQL.
-     * @throws Exception Para otros errores inesperados.
-     */
     override fun modifyProducto(nombre: String, nuevoPrecio: Double) {
-        var conn = DatabaseTienda.getConnection()
-        var stmt: PreparedStatement? = null
-        try {
-            val sql = "UPDATE Producto SET precio = ? WHERE nombre = ?"
-            stmt = conn.prepareStatement(sql)
-            stmt.setDouble(1, nuevoPrecio)
-            stmt.setString(2, nombre)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al actualizar el precio del producto '$nombre': ${e.message}")
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+        val sql = "UPDATE Producto SET precio = ? WHERE nombre = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setDouble(1, nuevoPrecio)
+                stmt.setString(2, nombre)
+                stmt.executeUpdate()
+            }
         }
     }
 }
