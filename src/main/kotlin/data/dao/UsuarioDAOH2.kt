@@ -1,157 +1,75 @@
 package es.prog2425.ejerciciosBD9_1.data.dao
 
-import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.Usuario
-import java.sql.*
+import javax.sql.DataSource
 
-class UsuarioDAOH2 : IUsuarioDAO {
-    /**
-     * Crea un nuevo usuario en la base de datos con los valores individuales proporcionados.
-     *
-     * @param nombre Nombre del usuario.
-     * @param email Dirección de correo electrónico del usuario.
-     *
-     * Establece una conexión a la base de datos, prepara una consulta SQL con parámetros,
-     * ejecuta la consulta y seguidamente maneja cualquier error que pueda surgir.
-     */
+class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
     override fun insertarCampo(nombre: String, email: String) {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
-
-        try{
+        ds.connection.use { connection ->
             val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
-            stmt = connection.prepareStatement(sql)
-            stmt.setString(1, nombre)
-            stmt.setString(2, email)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al insertar los campos en las tablas", e)
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(connection)
-        }
-    }
-
-    /**
-     * Crea un nuevo usuario en la base de datos usando una clase `Usuario`.
-     *
-     * @param usuario Clase que contiene toda la información necesaria para insertar en la tabla.
-     *
-     * Funciona igual que el metodo anterior, pero más limpio porque se tiene una clase con los datos agrupados.
-     */
-    override fun insertarCampo(usuario: Usuario) {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
-
-        try{
-            val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
-            stmt = connection.prepareStatement(sql)
-            stmt.setString(1, usuario.nombre)
-            stmt.setString(2, usuario.correo)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al insertar los campos en las tablas", e)
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(connection)
-        }
-    }
-
-    /**
-     * Obtiene todos los usuarios registrados en la base de datos.
-     *
-     * @return Una lista de objetos [Usuario] con todos los usuarios encontrados.
-     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
-     * @throws Exception Para cualquier otro tipo de error inesperado.
-     */
-    override fun getAll(): List<Usuario> {
-        val conn = DatabaseTienda.getConnection()
-        val listaUsuarios = mutableListOf<Usuario>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT * FROM Usuario"
-            stmt = conn.prepareStatement(sql)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                val id = rs.getInt("id")
-                val nombre = rs.getString("nombre")
-                val email = rs.getString("email")
-                listaUsuarios.add(Usuario(id, nombre, email))
+            connection.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, nombre)
+                stmt.setString(2, email)
+                stmt.executeUpdate()
             }
-        } catch (e: SQLException) {
-            throw SQLException("Error al obtener los usuarios: ${e.message}")
-        } catch(e: Exception) {
-            throw Exception("Error: ${e.message}")
-        }finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+        }
+    }
+
+    override fun insertarCampo(usuario: Usuario) {
+        ds.connection.use { connection ->
+            val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
+            connection.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, usuario.nombre)
+                stmt.setString(2, usuario.correo)
+                stmt.executeUpdate()
+            }
+        }
+    }
+
+    override fun getAll(): List<Usuario> {
+        val listaUsuarios = mutableListOf<Usuario>()
+        ds.connection.use { conn ->
+            val sql = "SELECT * FROM Usuario"
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        val id = rs.getInt("id")
+                        val nombre = rs.getString("nombre")
+                        val email = rs.getString("email")
+                        listaUsuarios.add(Usuario(id, nombre, email))
+                    }
+                }
+            }
         }
         return listaUsuarios
     }
 
-    /**
-     * Obtiene los usuarios que hayan comprado un producto específico por nombre.
-     *
-     * @param nombreProducto El nombre del producto que se desea buscar.
-     * @return Una lista de objetos [Usuario] que han comprado el producto especificado.
-     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
-     * @throws Exception Para cualquier otro tipo de error inesperado.
-     */
     override fun getUsuariosByProductoComprado(nombreProducto: String): List<Usuario> {
-        val conn = DatabaseTienda.getConnection()
         val usuarios = mutableListOf<Usuario>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT DISTINCT U.id, U.nombre, U.email FROM Usuario U JOIN Pedido P ON U.id = P.idUsuario JOIN LineaPedido LP ON P.id = LP.idPedido JOIN Producto PR ON LP.idProducto = PR.id WHERE PR.nombre = ?"
-            stmt = conn.prepareStatement(sql)
-            stmt.setString(1, nombreProducto)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                usuarios.add(Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email")))
+        val sql = "SELECT DISTINCT U.id, U.nombre, U.email FROM Usuario U JOIN Pedido P ON U.id = P.idUsuario JOIN LineaPedido LP ON P.id = LP.idPedido JOIN Producto PR ON LP.idProducto = PR.id WHERE PR.nombre = ?"
+
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, nombreProducto)
+                stmt.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        usuarios.add(
+                            Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email"))
+                        )
+                    }
+                }
             }
-        } catch (e: SQLException) {
-            throw SQLException("Error al obtener usuarios que compraron '$nombreProducto': ${e.message}")
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
         }
         return usuarios
     }
 
-    /**
-     * Elimina de la base de datos al usuario cuyo nombre coincida con el especificado.
-     *
-     * Esta operación ejecuta una sentencia la tabla `Usuario` usando el nombre como filtro y así borrando este mismo.
-     *
-     * @param nombre El nombre del usuario que se desea eliminar.
-     * @throws SQLException Si ocurre un error relacionado con la base de datos.
-     * @throws Exception Si ocurre cualquier otro tipo de error inesperado.
-     */
-    override fun deleteByName(nombre: String){
-        var conn = DatabaseTienda.getConnection()
-        var stmt: PreparedStatement? = null
-        try{
-            val sql = "DELETE FROM Usuario WHERE nombre = ?"
-            stmt = conn.prepareStatement(sql)
-            stmt.setString(1, nombre)
-            stmt.executeUpdate()
-        } catch (e: SQLException) {
-            throw SQLException("Error al eliminar usuario '$nombre' en la base de datos: ${e.message}")
-        } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+    override fun deleteByName(nombre: String) {
+        val sql = "DELETE FROM Usuario WHERE nombre = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, nombre)
+                stmt.executeUpdate()
+            }
         }
     }
 }
