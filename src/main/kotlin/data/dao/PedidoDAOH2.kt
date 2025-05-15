@@ -76,4 +76,20 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
             conn.commit()
         }
     }
+
+    override fun getPedidosPorNombreUsuario(nombre: String): List<Pedido> {
+        val pedidos = mutableListOf<Pedido>()
+        val sql = "SELECT P.id, P.precioTotal, P.idUsuario FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.nombre = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, nombre)
+                stmt.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        pedidos.add(Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario")))
+                    }
+                }
+            }
+        }
+        return pedidos
+    }
 }

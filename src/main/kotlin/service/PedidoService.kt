@@ -47,7 +47,7 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
      * @return Suma total del importe de los pedidos realizados por el usuario.
      * @throws IllegalArgumentException Si el nombre está vacío o en blanco.
      */
-    override fun obtenerPedidoPorUsuario(nombre: String): Double{
+    override fun obtenerImportePedidosPorUsuario(nombre: String): Double{
         require(nombre.isNotBlank()) { "El nombre no puede estar vacío" }
         return dao.getTotalImporteByNombreUsuario(nombre)
     }
@@ -61,5 +61,10 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
     override fun eliminarPedidoConLinea(id: Int) {
         require(id > 0) { "El id debe ser mayor que 0." }
         dao.deletePedidoConLineas(id)
+    }
+
+    override fun obtenerPedidosPorNombreUsuario(nombre: String): List<Pedido> {
+        require(nombre.isNotBlank()){ "El nombre no puede estar vacío." }
+        return dao.getPedidosPorNombreUsuario(nombre)
     }
 }

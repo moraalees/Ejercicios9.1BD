@@ -8,4 +8,5 @@ interface IPedidoDAO {
     fun getAll(): List<Pedido>
     fun getTotalImporteByNombreUsuario(nombre: String): Double
     fun deletePedidoConLineas(id: Int)
+    fun getPedidosPorNombreUsuario(nombre: String): List<Pedido>
 }
