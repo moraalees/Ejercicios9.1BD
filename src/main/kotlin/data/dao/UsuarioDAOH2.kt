@@ -4,9 +4,10 @@ import es.prog2425.ejerciciosBD9_1.model.Usuario
 import javax.sql.DataSource
 
 class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
+
     override fun insertarCampo(nombre: String, email: String) {
+        val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
         ds.connection.use { connection ->
-            val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
             connection.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, nombre)
                 stmt.setString(2, email)
@@ -16,8 +17,8 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
     }
 
     override fun insertarCampo(usuario: Usuario) {
+        val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
         ds.connection.use { connection ->
-            val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
             connection.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, usuario.nombre)
                 stmt.setString(2, usuario.correo)
@@ -28,8 +29,8 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
 
     override fun getAll(): List<Usuario> {
         val listaUsuarios = mutableListOf<Usuario>()
+        val sql = "SELECT * FROM Usuario"
         ds.connection.use { conn ->
-            val sql = "SELECT * FROM Usuario"
             conn.prepareStatement(sql).use { stmt ->
                 stmt.executeQuery().use { rs ->
                     while (rs.next()) {
@@ -47,7 +48,6 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
     override fun getUsuariosByProductoComprado(nombreProducto: String): List<Usuario> {
         val usuarios = mutableListOf<Usuario>()
         val sql = "SELECT DISTINCT U.id, U.nombre, U.email FROM Usuario U JOIN Pedido P ON U.id = P.idUsuario JOIN LineaPedido LP ON P.id = LP.idPedido JOIN Producto PR ON LP.idProducto = PR.id WHERE PR.nombre = ?"
-
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, nombreProducto)
