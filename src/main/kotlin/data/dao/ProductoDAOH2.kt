@@ -4,6 +4,7 @@ import es.prog2425.ejerciciosBD9_1.model.Producto
 import javax.sql.DataSource
 
 class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
+
     override fun insertarCampo(nombre: String, precio: Double, stock: Int) {
         val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
         ds.connection.use { conn ->
