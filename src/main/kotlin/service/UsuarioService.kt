@@ -20,36 +20,15 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
     }
 
     /**
-     * Añade un nuevo usuario utilizando un objeto `Usuario`.
-     *
-     * @param usuario Objeto que contiene los datos necesarios para registrar un usuario.
-     *
-     * Valida internamente que el nombre y el correo no estén vacíos.
-     * Llama al DAO para insertar el nuevo usuario en la base de datos.
-     */
-    override fun addUsuario(usuario: Usuario) {
-        require(usuario.nombre.isNotBlank()){ "El nombre no puede estar vacío." }
-        require(usuario.correo.isNotBlank()){ "El correo no puede estar vacío." }
-        dao.insertarCampo(usuario.nombre.trim(), usuario.correo.trim())
-    }
-
-    /**
      * Recupera todos los usuarios registrados en la base de datos.
      *
      * @return Una lista de objetos [Usuario] que representan todos los usuarios.
      */
     override fun obtenerUsuarios(): List<Usuario> = dao.getAll()
 
-    /**
-     * Obtiene una lista de usuarios que han comprado un producto específico.
-     *
-     * @param nombre Nombre del producto que se desea consultar.
-     * @return Lista de objetos [Usuario] que han comprado el producto indicado.
-     * @throws IllegalArgumentException Si el nombre del producto está vacío o en blanco.
-     */
-    override fun obtenerUsuarioPorProductoComprado(nombre: String): List<Usuario>{
-        require(nombre.isNotBlank()){ "El nombre del producto no puede estar vacío." }
-        return dao.getUsuariosByProductoComprado(nombre)
+    override fun obtenerUsuario(id: Int): Usuario {
+        require(id > 0){ "El ID debe ser mayor que 0." }
+        return dao.getById(id)
     }
 
     /**
@@ -62,4 +41,11 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
         require(nombre.isNotBlank()){ "El nombre del usuario no puede estar vacío." }
         dao.deleteByName(nombre)
     }
+
+    override fun actualizarUsuario(nombre: String, id: Int) {
+        require(id > 0){ "El ID debe ser mayor que 0." }
+        require(nombre.isNotBlank()){ "El nombre no puede estar vacío." }
+        dao.updateUsuario(nombre, id)
+    }
+
 }
