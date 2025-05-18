@@ -18,19 +18,6 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         }
     }
 
-    override fun insertarCampo(lineaPedido: LineaPedido) {
-        val sql = "INSERT INTO Lineapedido (idpedido, idproducto, cantidad, precio) VALUES (?, ?, ?, ?)"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, lineaPedido.idPedido)
-                stmt.setInt(2, lineaPedido.idProducto)
-                stmt.setInt(3, lineaPedido.cantidad)
-                stmt.setDouble(4, lineaPedido.precio)
-                stmt.executeUpdate()
-            }
-        }
-    }
-
     override fun getAll(): List<LineaPedido> {
         val listaLineasPedido = mutableListOf<LineaPedido>()
         val sql = "SELECT * FROM Lineapedido"
@@ -51,6 +38,18 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         return listaLineasPedido
     }
 
+    override fun getById(id: Int): LineaPedido {
+        val sql = "SELECT * FROM LineaPedido WHERE id = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setInt(1, id)
+                stmt.executeQuery().use { rs ->
+                    return LineaPedido(rs.getInt("id"), rs.getInt("cantidad"), rs.getDouble("precio"), rs.getInt("idPedido"), rs.getInt("idProducto"))
+                }
+            }
+        }
+    }
+
     override fun getLineasByPedido(idPedido: Int): List<LineaPedido> {
         val lineas = mutableListOf<LineaPedido>()
         val sql = "SELECT * FROM LineaPedido WHERE idPedido = ?"
@@ -67,29 +66,24 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         return lineas
     }
 
-    override fun modifyProductoYPrecioPorLinea(id: Int, idProducto: Int) {
-        val sql = "SELECT precio FROM Producto WHERE id = ?"
-        val updateSql = "UPDATE LineaPedido SET idProducto = ?, precio = ? WHERE id = ?"
+    override fun updateLinea(precio: Double, id: Int) {
+        val sql = "UPDATE LineaPedido SET precio = ? WHERE id = ?"
         ds.connection.use { conn ->
-            conn.autoCommit = false
-            val precio = conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, idProducto)
-                stmt.executeQuery().use { rs ->
-                    if (rs.next()) {
-                        rs.getDouble("precio")
-                    } else {
-                        conn.rollback()
-                        return
-                    }
-                }
-            }
-            conn.prepareStatement(updateSql).use { stmt ->
-                stmt.setInt(1, idProducto)
-                stmt.setDouble(2, precio * 2)
-                stmt.setInt(3, id)
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setDouble(1, precio)
+                stmt.setInt(2, id)
                 stmt.executeUpdate()
             }
-            conn.commit()
+        }
+    }
+
+    override fun deleteLinea(id: Int) {
+        val sql = "DELETE FROM LineaPedido WHERE id = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setInt(1, id)
+                stmt.executeUpdate()
+            }
         }
     }
 }

@@ -27,21 +27,6 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         dao.insertarCampo(idPedido, idProducto, cantidad, precio)
     }
 
-    /**
-     * Añade una nueva línea de pedido utilizando un objeto `LineaPedido`.
-     *
-     * @param lineaPedido Objeto que contiene los datos necesarios para registrar una línea de pedido.
-     *
-     * Valida internamente que todos los campos del objeto sean positivos.
-     * Llama al DAO para la inserción en la tabla.
-     */
-    override fun addLineaPedido(lineaPedido: LineaPedido) {
-        require(lineaPedido.idPedido > 0) { "El ID debe de ser mayor que 0." }
-        require(lineaPedido.idProducto > 0) { "El ID debe de ser mayor que 0." }
-        require(lineaPedido.cantidad > 0) { "La cantidad debe de ser mayor que 0." }
-        require(lineaPedido.precio > 0) { "El precio debe de ser mayor que 0." }
-        dao.insertarCampo(lineaPedido.idPedido, lineaPedido.idProducto, lineaPedido.cantidad, lineaPedido.precio)
-    }
 
     /**
      * Obtiene todas las líneas de pedido registradas en la base de datos.
@@ -51,6 +36,13 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
      * Llama al DAO para la obtención de líneas.
      */
     override fun obtenerLineasPedido(): List<LineaPedido> = dao.getAll()
+
+
+    override fun obtenerLineaById(id: Int): LineaPedido {
+        require(id > 0){ "El ID debe ser mayor que 0." }
+        return dao.getById(id)
+    }
+
 
     /**
      * Obtiene todas las líneas de pedido asociadas a un pedido específico.
@@ -64,18 +56,16 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         return dao.getLineasByPedido(id)
     }
 
-    /**
-     * Modifica la línea de pedido especificada, actualizando su producto y precio.
-     *
-     * El nuevo precio se calcula automáticamente como el doble del precio actual del nuevo producto.
-     *
-     * @param id ID de la línea de pedido que se desea actualizar.
-     * @param idProducto ID del nuevo producto que se asignará a la línea de pedido.
-     * @throws IllegalArgumentException Si el ID de la línea o el ID del producto no es mayor que 0.
-     */
-    override fun modificarProductoYPrecioPorLinea(id: Int, idProducto: Int) {
+    override fun actualizarLinea(precio: Double, id: Int) {
+        require(precio > 0){ "El precio debe ser mayor que 0." }
         require(id > 0){ "El id debe ser mayor que 0." }
-        require(idProducto > 0){ "El id debe ser mayor que 0." }
-        dao.modifyProductoYPrecioPorLinea(id, idProducto)
+        dao.updateLinea(precio, id)
     }
+
+
+    override fun eliminarLinea(id: Int) {
+        require(id > 0){ "El id debe ser mayor que 0." }
+        dao.deleteLinea(id)
+    }
+
 }
