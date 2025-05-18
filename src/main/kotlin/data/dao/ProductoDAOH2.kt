@@ -17,14 +17,14 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         }
     }
 
-    override fun insertarCampo(producto: Producto) {
-        val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
+    override fun getById(id: Int): Producto {
+        val sql = "SELECT * FROM Producto WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, producto.nombre)
-                stmt.setDouble(2, producto.precio)
-                stmt.setInt(3, producto.stock)
-                stmt.executeUpdate()
+                stmt.setInt(1, id)
+                stmt.executeQuery().use { rs ->
+                    return Producto(rs.getInt("id"), rs.getString("nombre"), rs.getDouble("precio"), rs.getInt("stock"))
+                }
             }
         }
     }

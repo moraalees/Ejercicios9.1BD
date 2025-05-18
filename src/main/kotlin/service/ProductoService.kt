@@ -22,20 +22,6 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
         dao.insertarCampo(nombre.trim(), precio, stock)
     }
 
-    /**
-     * Añade una nueva línea de pedido utilizando un objeto `LineaPedido`.
-     *
-     * @param lineaPedido Objeto que contiene los datos necesarios para registrar una línea de pedido.
-     *
-     * Valida internamente que todos los campos del objeto sean positivos.
-     * Llama al DAO para insertar la nueva línea de pedido en la base de datos.
-     */
-    override fun addProducto(producto: Producto) {
-        require(producto.nombre.isNotBlank()){ "El nombre no puede estar vacío." }
-        require(producto.precio > 0){ "El precio debe ser mayor que 0." }
-        require(producto.stock >= 0){ "El stock debe ser mayor o igual que 0." }
-        dao.insertarCampo(producto.nombre.trim(), producto.precio, producto.stock)
-    }
 
     /**
      * Recupera todos los productos disponibles en la base de datos.
@@ -43,6 +29,11 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
      * @return Una lista de objetos [Producto] que representan todos los productos existentes.
      */
     override fun obtenerProductos(): List<Producto> = dao.getAll()
+
+    override fun obtenerPorId(id: Int): Producto {
+        require(id > 0){ "El ID no puede ser menor o igual que 0." }
+        return dao.getById(id)
+    }
 
     /**
      * Elimina un producto de la base de datos según su precio.
