@@ -58,12 +58,12 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         }
     }
 
-    override fun modifyProducto(nombre: String, nuevoPrecio: Double) {
-        val sql = "UPDATE Producto SET precio = ? WHERE nombre = ?"
+    override fun modifyProducto(id: Int, nuevoPrecio: Double) {
+        val sql = "UPDATE Producto SET precio = ? WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setDouble(1, nuevoPrecio)
-                stmt.setString(2, nombre)
+                stmt.setInt(2, id)
                 stmt.executeUpdate()
             }
         }

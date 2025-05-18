@@ -53,9 +53,9 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
      * @param precio Nuevo precio que se asignará al producto.
      * @throws IllegalArgumentException Si el nombre está vacío o si el precio es menor o igual que 0.
      */
-    override fun modificarProducto(nombre: String, precio: Double) {
-        require(nombre.isNotBlank()){ "El nombre no puede estar vacío" }
+    override fun modificarProducto(id: Int, precio: Double) {
+        require(id > 0){ "El ID no puede ser menor o igual que 0." }
         require(precio > 0) { "El precio no puede ser menor o igual que 0 €" }
-        dao.modifyProducto(nombre, precio)
+        dao.modifyProducto(id, precio)
     }
 }

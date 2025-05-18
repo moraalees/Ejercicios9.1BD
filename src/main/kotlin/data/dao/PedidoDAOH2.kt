@@ -16,13 +16,14 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         }
     }
 
-    override fun insertarCampo(pedido: Pedido) {
-        val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
+    override fun getById(id: Int): Pedido {
+        val sql = "SELECT * FROM Pedido WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, pedido.idUsuario)
-                stmt.setDouble(2, pedido.precioTotal)
-                stmt.executeUpdate()
+                stmt.setInt(1, id)
+                stmt.executeQuery().use { rs ->
+                    return Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario"))
+                }
             }
         }
     }
@@ -92,4 +93,16 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         }
         return pedidos
     }
+
+    override fun updatePedido(precioTotal: Double, id: Int) {
+        val sql = "UPDATE Pedido SET precioTotal = ? WHERE id = ?"
+        ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setDouble(1, precioTotal)
+                stmt.setInt(2, id)
+                stmt.executeUpdate()
+            }
+        }
+    }
+
 }

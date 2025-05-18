@@ -57,7 +57,6 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
         }
     }
 
-
     override fun deleteByName(nombre: String) {
         val sql = "DELETE FROM Usuario WHERE nombre = ?"
         ds.connection.use { conn ->

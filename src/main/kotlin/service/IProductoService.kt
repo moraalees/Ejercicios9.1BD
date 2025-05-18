@@ -7,5 +7,5 @@ interface IProductoService {
     fun obtenerProductos(): List<Producto>
     fun obtenerPorId(id: Int): Producto
     fun eliminarProducto(precio: Double)
-    fun modificarProducto(nombre: String, precio: Double)
+    fun modificarProducto(id: Int, precio: Double)
 }

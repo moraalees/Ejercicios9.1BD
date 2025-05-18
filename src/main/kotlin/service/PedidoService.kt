@@ -19,18 +19,9 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         dao.insertarCampo(idUsuario, precio)
     }
 
-    /**
-     * Añade un nuevo pedido utilizando un objeto `Pedido`.
-     *
-     * @param pedido Objeto que contiene los datos necesarios para registrar un pedido.
-     *
-     * Valida internamente que ambos campos del objeto sean positivos.
-     * Llama al DAO para insertar el nuevo pedido en la base de datos.
-     */
-    override fun addPedido(pedido: Pedido){
-        require(pedido.idUsuario > 0){ "El ID debe ser mayor que 0." }
-        require(pedido.precioTotal > 0){ "El precio debe ser mayor que 0." }
-        dao.insertarCampo(pedido.idUsuario, pedido.precioTotal)
+    override fun obtenerPorId(id: Int): Pedido {
+        require(id > 0){ "El ID debe ser mayor que 0." }
+        return dao.getById(id)
     }
 
     /**
@@ -59,7 +50,7 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
      * @throws IllegalArgumentException Si el ID proporcionado no es mayor que 0.
      */
     override fun eliminarPedidoConLinea(id: Int) {
-        require(id > 0) { "El id debe ser mayor que 0." }
+        require(id > 0) { "El ID debe ser mayor que 0." }
         dao.deletePedidoConLineas(id)
     }
 
@@ -67,4 +58,11 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         require(nombre.isNotBlank()){ "El nombre no puede estar vacío." }
         return dao.getPedidosPorNombreUsuario(nombre)
     }
+
+    override fun actualizarPedido(precioTotal: Double, id: Int) {
+        require(precioTotal > 0){ "El precio debe ser mayor que 0." }
+        require(id > 0) { "El ID debe ser mayor que 0." }
+        dao.updatePedido(precioTotal, id)
+    }
+
 }

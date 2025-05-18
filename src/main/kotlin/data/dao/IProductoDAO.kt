@@ -7,5 +7,5 @@ interface IProductoDAO {
     fun getAll(): List<Producto>
     fun getById(id: Int): Producto
     fun deleteByPrecio(precio: Double)
-    fun modifyProducto(nombre: String, nuevoPrecio: Double)
+    fun modifyProducto(id: Int, nuevoPrecio: Double)
 }
