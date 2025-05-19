@@ -5,13 +5,25 @@ import com.zaxxer.hikari.HikariDataSource
 import org.h2.jdbcx.JdbcDataSource
 import javax.sql.DataSource
 
+/**
+ * Clase para declarar instancias de [DataSource] según el modo escogido (en mi programa HikariCP).
+ *
+ * Soporta conexiones simples a través de HikariCP.
+ */
 object DataSourceFactory {
-
+    //Variables constantes para poder llamar a la BD
     private const val JDBC_URL = "jdbc:h2:file:./data/tienda"
     private const val USER = "cristian"
     private const val PASSWORD = ""
 
+    /**
+     * Retorna un [DataSource] según el modo escogido.
+     *
+     * @param mode El modo de conexión a utilizar (Hikari / Simple).
+     * @return Una instancia de [DataSource] configurada.
+     */
     fun getDataSource(mode: Mode = Mode.HIKARI): DataSource {
+        //Dependiendo el modo llama a la BD de una forma u otra
         return when (mode) {
             Mode.HIKARI -> {
                 val config = HikariConfig().apply {
