@@ -1,6 +1,10 @@
 package es.prog2425.ejerciciosBD9_1
 
 import es.prog2425.ejerciciosBD9_1.app.LineaPedidosManager
+import es.prog2425.ejerciciosBD9_1.app.PedidosManager
+import es.prog2425.ejerciciosBD9_1.app.ProductosManager
+import es.prog2425.ejerciciosBD9_1.app.ProgramaManager
+import es.prog2425.ejerciciosBD9_1.app.UsuariosManager
 import es.prog2425.ejerciciosBD9_1.data.dao.LineaPedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.PedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.ProductoDAOH2
@@ -31,5 +35,10 @@ fun main() {
     val lineaDao = LineaPedidoDAOH2(dataSource)
     val lineaService = LineaPedidoService(lineaDao)
 
-    LineaPedidosManager(lineaService, pedidoService, productoService, consola).programaLineaPedidos()
+    ProgramaManager(
+        UsuariosManager(usuarioService, consola),
+        ProductosManager(productoService, consola),
+        PedidosManager(pedidoService, consola ,usuarioService),
+        LineaPedidosManager(lineaService, pedidoService, productoService, consola),
+        consola).programa()
 }
