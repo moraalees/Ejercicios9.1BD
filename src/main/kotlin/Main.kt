@@ -17,15 +17,22 @@ import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.UI
 
+/**
+ * Función principal del programa
+ *
+ * En esta función se llaman y realizan las acciones necesarias para que el programa empiece
+ */
 fun main() {
     val consola = UI()
 
+    //Aquí se llama al Data Source Hikari para usarlo en las clases DAO
     val dataSource = try {
         DataSourceFactory.getDataSource(Mode.HIKARI)
     } catch (e: IllegalStateException) {
         throw IllegalStateException("Problemas al crear el DataSource: ${e.message}")
     }
 
+    //Se crean todos los servicios para luego inyectarlos en el programa principal
     val usuarioDao = UsuarioDAOH2(dataSource)
     val usuarioService = UsuarioService(usuarioDao)
     val productoDao = ProductoDAOH2(dataSource)
