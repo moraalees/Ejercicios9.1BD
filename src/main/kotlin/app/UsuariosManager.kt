@@ -18,8 +18,8 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
                 "1" -> mostrarUsuarios()
                 "2" -> buscarUsuario()
                 "3" -> agregarUsuario()
-                "4" -> ""
-                "5" -> ""
+                "4" -> eliminarUsuario()
+                "5" -> modificarUsuario()
                 "6" -> salirPrograma()
                 else -> ui.mostrarError("Opción inválida.")
             }
@@ -28,14 +28,14 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
     }
 
     private fun mostrarMenu(){
-        println(""""
-                    ----MENÚ USUARIOS----
-                    1. Listar Usuarios
-                    2. Buscar Usuario por ID
-                    3. Añadir Usuario
-                    4. Eliminar Usuario
-                    5. Actualizar Username
-                    6. Salir
+        println("""
+                ----MENÚ USUARIOS----
+                1. Listar Usuarios
+                2. Buscar Usuario por ID
+                3. Añadir Usuario
+                4. Eliminar Usuario Por ID
+                5. Actualizar Username
+                6. Salir
                 """.trimIndent()
         )
     }
@@ -57,6 +57,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
     }
 
     private fun buscarUsuario(){
+        ui.saltoLinea()
         val idUsuario = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
         if (idUsuario == null){
             ui.mostrarError("El ID es nulo...")
@@ -78,6 +79,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
     }
 
     private fun agregarUsuario(){
+        ui.saltoLinea()
         val nombreUsuario = ui.entrada("Ingrese el nombre del nuevo usuario: ")
         val correoUsuario = ui.entrada("Ingrese el E-mail del nuevo usuario: ")
 
@@ -93,7 +95,58 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
         }
     }
 
+    private fun eliminarUsuario(){
+        ui.saltoLinea()
+        val idUsuario = ui.entrada("Ingrese el ID a eliminar: ").toIntOrNull()
+
+        if (idUsuario == null){
+            ui.mostrarError("El ID es nulo...")
+        } else {
+            try {
+                val eliminado = servicio.eliminarPorId(idUsuario)
+                if (eliminado) {
+                    ui.mostrar("Estudiante eliminado con éxito!")
+                } else {
+                    ui.mostrar("No se encontró un usuario con ese ID.")
+                }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError("Argumentos inválidos: ${e.message}")
+            } catch (e: SQLException) {
+                ui.mostrarError("Error al eliminar el usuario: ${e.message}")
+            } catch (e: Exception) {
+                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+        }
+    }
+
+    private fun modificarUsuario(){
+        ui.saltoLinea()
+        val idUsuario = ui.entrada("Ingrese el ID del usuario a modificar: ").toIntOrNull()
+
+        if (idUsuario == null){
+            ui.mostrarError("El ID es nulo...")
+        } else {
+            val username = ui.entrada("Ingrese el nuevo nombre de usuario: ")
+            try {
+                val actualizado = servicio.actualizarUsuario(username, idUsuario)
+                if (actualizado) {
+                    ui.mostrar("Usuario actualizado con éxito!")
+                } else {
+                    ui.mostrar("No se encontró un usuario con ese ID.")
+                }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError("Argumentos inválidos: ${e.message}")
+            } catch (e: SQLException) {
+                ui.mostrarError("Error al modificar el nombre: ${e.message}")
+            } catch (e: Exception) {
+                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+        }
+    }
+
+
     private fun salirPrograma(){
+        ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")
         salir = true
     }

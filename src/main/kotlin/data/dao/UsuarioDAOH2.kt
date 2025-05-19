@@ -34,35 +34,45 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
         return listaUsuarios
     }
 
-    override fun getById(id: Int): Usuario {
+    override fun getById(id: Int): Usuario? {
         val sql = "SELECT * FROM Usuario WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
-                    return Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email"))
+                    return if (rs.next()) {
+                        Usuario(
+                            rs.getInt("id"),
+                            rs.getString("nombre"),
+                            rs.getString("email")
+                        )
+                    } else {
+                        null
+                    }
                 }
             }
         }
     }
 
-    override fun updateUsuario(nombre: String, id: Int) {
+    override fun updateUsuario(nombre: String, id: Int): Boolean {
         val sql = "UPDATE Usuario SET nombre = ? WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, nombre)
                 stmt.setInt(2, id)
-                stmt.executeUpdate()
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }
 
-    override fun deleteByName(nombre: String) {
-        val sql = "DELETE FROM Usuario WHERE nombre = ?"
+    override fun deleteById(id: Int): Boolean {
+        val sql = "DELETE FROM Usuario WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, nombre)
-                stmt.executeUpdate()
+                stmt.setInt(1, id)
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }

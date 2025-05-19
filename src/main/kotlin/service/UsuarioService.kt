@@ -26,26 +26,20 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
      */
     override fun obtenerUsuarios(): List<Usuario> = dao.getAll()
 
-    override fun obtenerUsuario(id: Int): Usuario {
+    override fun obtenerUsuario(id: Int): Usuario? {
         require(id > 0){ "El ID debe ser mayor que 0." }
         return dao.getById(id)
     }
 
-    /**
-     * Elimina un usuario de la base de datos según su nombre.
-     *
-     * @param nombre Nombre del usuario que se desea eliminar.
-     * @throws IllegalArgumentException Si el nombre está vacío o en blanco.
-     */
-    override fun eliminarUsuario(nombre: String) {
-        require(nombre.isNotBlank()){ "El nombre del usuario no puede estar vacío." }
-        dao.deleteByName(nombre)
-    }
 
-    override fun actualizarUsuario(nombre: String, id: Int) {
+    override fun actualizarUsuario(nombre: String, id: Int): Boolean {
         require(id > 0){ "El ID debe ser mayor que 0." }
         require(nombre.isNotBlank()){ "El nombre no puede estar vacío." }
-        dao.updateUsuario(nombre, id)
+        return dao.updateUsuario(nombre, id)
     }
 
+    override fun eliminarPorId(id: Int): Boolean {
+        require(id > 0){ "El ID debe ser mayor que 0." }
+        return dao.deleteById(id)
+    }
 }
