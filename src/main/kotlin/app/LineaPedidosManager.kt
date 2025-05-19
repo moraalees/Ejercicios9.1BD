@@ -6,6 +6,14 @@ import es.prog2425.ejerciciosBD9_1.service.IProductoService
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 import java.sql.SQLException
 
+/**
+ * Clase que simula el comportamiento del programa del menú de Lineas de Pedido.
+ *
+ * @property service Servicio que proporciona operaciones en la BD sobre las líneas de pedido.
+ * @property servicioPedido Servicio que permite consultar pedidos existentes.
+ * @property servicioProducto Servicio que permite consultar productos existentes.
+ * @property ui Interfaz usada para interactuar con el usuario.
+ */
 class LineaPedidosManager(
     private val service: ILineaPedidoService,
     private val servicioPedido: IPedidoService,
@@ -13,8 +21,13 @@ class LineaPedidosManager(
     private val ui: IEntradaSalida
 ) {
 
+    //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
 
+    /**
+     * Función principal del programa de gestión de líneas de pedido.
+     * Muestra un menú interactivo hasta que el usuario decida salir.
+     */
     fun programaLineaPedidos() {
         while (!salir) {
             ui.limpiarPantalla(10)
@@ -35,6 +48,9 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Muestra todas las líneas de pedido disponibles en el sistema.
+     */
     private fun mostrarLineas(){
         ui.saltoLinea()
         try {
@@ -51,6 +67,9 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Muestra el menú principal de opciones al usuario.
+     */
     private fun mostrarMenu(){
         ui.mostrar("""
                 ----MENÚ LÍNEA PEDIDOS----
@@ -65,6 +84,9 @@ class LineaPedidosManager(
         )
     }
 
+    /**
+     * Solicita un ID de línea al usuario y muestra la línea correspondiente, si existe.
+     */
     private fun obtenerLinea(){
         ui.saltoLinea()
         val idLinea = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
@@ -88,6 +110,9 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Permite al usuario crear una nueva línea de pedido tras ingresar los datos requeridos.
+     */
     private fun agregarLinea(){
         ui.saltoLinea()
         val cantidad = ui.entrada("Ingrese la cantidad de la nueva línea de pedidos: ").toIntOrNull()
@@ -115,6 +140,10 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Elimina una línea de pedido según el ID introducido por el usuario.
+     * Muestra mensajes de éxito o error según corresponda.
+     */
     private fun eliminarLinea(){
         ui.saltoLinea()
         val idLinea = ui.entrada("Ingrese el ID de la línea a eliminar: ").toIntOrNull()
@@ -139,6 +168,9 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Actualiza el precio de una línea de pedido a partir del ID y nuevo precio proporcionado por el usuario.
+     */
     private fun actualizarLinea(){
         ui.saltoLinea()
         val idLinea = ui.entrada("Ingrese el ID de la línea a modificar: ").toIntOrNull()
@@ -168,6 +200,10 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Obtiene y muestra todas las líneas de pedido asociadas a un pedido específico,
+     * cuyo ID es ingresado por el usuario.
+     */
     private fun obtenerLineaPorPedido(){
         ui.saltoLinea()
         val idPedido = ui.entrada("Introduce el ID del pedido: ").toIntOrNull()
@@ -178,7 +214,7 @@ class LineaPedidosManager(
                 val lineas = service.obtenerLineaPedidoByPedidoId(idPedido)
 
                 if (lineas.isEmpty()) {
-                    ui.mostrar("No se encontraron líneas para el pedido con ID $idPedido.")
+                    ui.mostrar("No se encontraron líneas para el pedido con ID $idPedido...")
                 } else {
                     ui.mostrar("Líneas del pedido $idPedido:")
                     lineas.forEach { linea ->
@@ -193,6 +229,9 @@ class LineaPedidosManager(
         }
     }
 
+    /**
+     * Finaliza el bucle del programa y muestra un mensaje de salida.
+     */
     private fun salirPrograma(){
         ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")
