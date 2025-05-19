@@ -1,10 +1,10 @@
 package es.prog2425.ejerciciosBD9_1.app
 
-import es.prog2425.ejerciciosBD9_1.service.ProductoService
-import es.prog2425.ejerciciosBD9_1.ui.UI
+import es.prog2425.ejerciciosBD9_1.service.IProductoService
+import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 import java.sql.SQLException
 
-class ProductosManager(private val servicio: ProductoService, private val ui: UI) {
+class ProductosManager(private val servicio: IProductoService, private val ui: IEntradaSalida) {
     private var salir = false
 
     fun programaProductos(){
