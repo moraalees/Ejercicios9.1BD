@@ -1,7 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.model
 
 data class LineaPedido(
-    private val id: Int,
+    val id: Int,
     val cantidad: Int,
     val precio: Double,
     val idPedido: Int,

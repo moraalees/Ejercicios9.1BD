@@ -6,4 +6,5 @@ interface IEntradaSalida {
     fun limpiarPantalla(lineas: Int)
     fun saltoLinea()
     fun pausa()
+    fun entrada(msj: String): String
 }

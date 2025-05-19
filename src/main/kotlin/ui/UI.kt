@@ -22,10 +22,14 @@ class UI : IEntradaSalida {
         println("")
     }
 
-
     override fun pausa() {
         saltoLinea()
         println("Pulse ENTER...")
         val valor = readln()
+    }
+
+    override fun entrada(msj: String): String {
+        mostrar(msj)
+        return readln()
     }
 }
