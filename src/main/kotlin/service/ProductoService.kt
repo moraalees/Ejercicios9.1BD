@@ -3,17 +3,23 @@ package es.prog2425.ejerciciosBD9_1.service
 import es.prog2425.ejerciciosBD9_1.data.dao.ProductoDAOH2
 import es.prog2425.ejerciciosBD9_1.model.Producto
 
+/**
+ * Servicio que maneja las operaciones relacionadas con [Producto].
+ *
+ * Se encarga de validar los datos antes de llamar al DAO correspondiente (ProductoDAOH2).
+ *
+ * @property dao Instancia del DAO que proporciona acceso a la base de datos de [Producto].
+ */
 class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
+
     /**
-     * Añade una nueva línea de pedido utilizando valores individuales.
+     * Añade un nuevo [Producto] al sistema con nombre, precio y stock.
      *
-     * @param idPedido ID del pedido al que se añadirá la línea.
-     * @param idProducto ID del producto que se está agregando.
-     * @param cantidad Cantidad de productos.
-     * @param precio Precio unitario del producto.
+     * @param nombre Nombre del [Producto]. No debe estar vacío o en blanco.
+     * @param precio Precio del [Producto]. Debe ser mayor que 0.
+     * @param stock Cantidad en inventario. Debe ser mayor o igual que 0.
      *
-     * Valida que todos los valores sean positivos antes de llamar al metodo del DAO correspondiente.
-     * Llama al DAO para insertar la nueva línea de pedido en la base de datos.
+     * @throws IllegalArgumentException Si alguno de los parámetros no cumple las condiciones.
      */
     override fun addProducto(nombre: String, precio: Double, stock: Int) {
         require(nombre.isNotBlank()){ "El nombre no puede estar vacío." }
@@ -22,7 +28,6 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
         dao.insertarCampo(nombre.trim(), precio, stock)
     }
 
-
     /**
      * Recupera todos los productos disponibles en la base de datos.
      *
@@ -30,15 +35,23 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
      */
     override fun obtenerProductos(): List<Producto> = dao.getAll()
 
+    /**
+     * Obtiene un [Producto] específico a partir de su ID.
+     *
+     * @param id Identificador único del [Producto]. Debe ser mayor que 0.
+     * @return El [Producto] encontrado o null si no existe.
+     *
+     * @throws IllegalArgumentException Si el ID es menor o igual que 0.
+     */
     override fun obtenerPorId(id: Int): Producto? {
         require(id > 0){ "El ID no puede ser menor o igual que 0." }
         return dao.getById(id)
     }
 
     /**
-     * Elimina un producto de la base de datos según su precio.
+     * Elimina un [Producto] de la base de datos según su precio.
      *
-     * @param precio Precio del producto que se desea eliminar.
+     * @param precio Precio del [Producto] que se desea eliminar.
      * @throws IllegalArgumentException Si el precio no es mayor que 0.
      */
     override fun eliminarProducto(id: Int): Boolean {
@@ -47,9 +60,9 @@ class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
     }
 
     /**
-     * Modifica el precio de un producto identificado por su nombre.
+     * Modifica el precio de un [Producto] identificado por su nombre.
      *
-     * @param nombre Nombre del producto que se desea actualizar.
+     * @param nombre Nombre del [Producto] que se desea actualizar.
      * @param precio Nuevo precio que se asignará al producto.
      * @throws IllegalArgumentException Si el nombre está vacío o si el precio es menor o igual que 0.
      */
