@@ -3,8 +3,22 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 import es.prog2425.ejerciciosBD9_1.model.LineaPedido
 import javax.sql.DataSource
 
+/**
+ * Implementa [ILineaPedidoDAO] que gestiona el acceso a la base de datos
+ * para operaciones utilizando H2.
+ *
+ * @param ds Fuente de datos para obtener las conexiones a la base de datos.
+ */
 class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
 
+    /**
+     * Inserta una nueva [LineaPedido] en la base de datos.
+     *
+     * @param idPedido ID del pedido al que pertenece la línea.
+     * @param idProducto ID del producto incluido en la línea.
+     * @param cantidad Cantidad del producto.
+     * @param precio Precio unitario del producto.
+     */
     override fun insertarCampo(idPedido: Int, idProducto: Int, cantidad: Int, precio: Double) {
         val sql = "INSERT INTO Lineapedido (idpedido, idproducto, cantidad, precio) VALUES (?, ?, ?, ?)"
         ds.connection.use { conn ->
@@ -18,6 +32,11 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         }
     }
 
+    /**
+     * Recupera todas las líneas de pedido existentes en la base de datos.
+     *
+     * @return Lista de objetos [LineaPedido].
+     */
     override fun getAll(): List<LineaPedido> {
         val listaLineasPedido = mutableListOf<LineaPedido>()
         val sql = "SELECT * FROM Lineapedido"
@@ -38,6 +57,12 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         return listaLineasPedido
     }
 
+    /**
+     * Recupera una [LineaPedido] por su ID.
+     *
+     * @param id ID de la línea de pedido.
+     * @return Objeto [LineaPedido] si se encuentra o null si no existe.
+     */
     override fun getById(id: Int): LineaPedido? {
         val sql = "SELECT * FROM LineaPedido WHERE id = ?"
         ds.connection.use { conn ->
@@ -54,6 +79,12 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         }
     }
 
+    /**
+     * Recupera todas las líneas de pedido asociadas a un pedido específico.
+     *
+     * @param idPedido ID del pedido.
+     * @return Lista de [LineaPedido] correspondientes al pedido.
+     */
     override fun getLineasByPedido(idPedido: Int): List<LineaPedido> {
         val lineas = mutableListOf<LineaPedido>()
         val sql = "SELECT * FROM LineaPedido WHERE idPedido = ?"
@@ -70,6 +101,13 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         return lineas
     }
 
+    /**
+     * Actualiza el precio de una [LineaPedido] existente.
+     *
+     * @param precio Nuevo precio.
+     * @param id ID de la línea de pedido a actualizar.
+     * @return Boolean: true si la actualización fue exitosa o false si no se modificó ningún registro.
+     */
     override fun updateLinea(precio: Double, id: Int): Boolean {
         val sql = "UPDATE LineaPedido SET precio = ? WHERE id = ?"
         ds.connection.use { conn ->
@@ -82,6 +120,12 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         }
     }
 
+    /**
+     * Elimina una [LineaPedido] por su ID.
+     *
+     * @param id ID de la línea de pedido a eliminar.
+     * @return Boolean: true si la eliminación fue exitosa o false si no se eliminó ningún registro.
+     */
     override fun deleteLinea(id: Int): Boolean {
         val sql = "DELETE FROM LineaPedido WHERE id = ?"
         ds.connection.use { conn ->

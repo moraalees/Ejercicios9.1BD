@@ -2,6 +2,9 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.model.Pedido
 
+/**
+ * Interfaz que dicta todos los métodos del DAO de [Pedido]
+ */
 interface IPedidoDAO {
     fun insertarCampo(idUsuario: Int, precio: Double)
     fun getAll(): List<Pedido>

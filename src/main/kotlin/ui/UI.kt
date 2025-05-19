@@ -1,6 +1,8 @@
 package es.prog2425.ejerciciosBD9_1.ui
 
 /**
+ * Implementa [IEntradaSalida]
+ *
  * Clase que maneja la interacción con el usuario por consola.
  *
  * Implementa funciones como mostrar mensajes, capturar entradas, limpiar pantalla,
