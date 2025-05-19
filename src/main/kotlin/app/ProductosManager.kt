@@ -126,7 +126,7 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
 
     private fun actualizarPrecio(){
         ui.saltoLinea()
-        val idProducto = ui.entrada("Ingrese el ID del producto a eliminar: ").toIntOrNull()
+        val idProducto = ui.entrada("Ingrese el ID del producto a modificar: ").toIntOrNull()
 
         if (idProducto == null){
             ui.mostrarError("El ID es nulo...")

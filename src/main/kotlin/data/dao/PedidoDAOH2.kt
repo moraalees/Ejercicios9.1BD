@@ -16,13 +16,17 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         }
     }
 
-    override fun getById(id: Int): Pedido {
+    override fun getById(id: Int): Pedido? {
         val sql = "SELECT * FROM Pedido WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
-                    return Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario"))
+                    return if (rs.next()) {
+                        Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario"))
+                    } else {
+                        null
+                    }
                 }
             }
         }
@@ -61,20 +65,28 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         return 0.0
     }
 
-    override fun deletePedidoConLineas(id: Int) {
+    override fun deletePedidoConLineas(id: Int): Boolean {
         ds.connection.use { conn ->
             conn.autoCommit = false
-            var sql = "DELETE FROM LineaPedido WHERE idPedido = ?"
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, id)
-                stmt.executeUpdate()
+            try {
+                val deleteLineasSql = "DELETE FROM LineaPedido WHERE idPedido = ?"
+                conn.prepareStatement(deleteLineasSql).use { stmt ->
+                    stmt.setInt(1, id)
+                    stmt.executeUpdate()
+                }
+
+                val deletePedidoSql = "DELETE FROM Pedido WHERE id = ?"
+                val filasAfectadas = conn.prepareStatement(deletePedidoSql).use { stmt ->
+                    stmt.setInt(1, id)
+                    stmt.executeUpdate()
+                }
+
+                conn.commit()
+                return filasAfectadas > 0
+            } catch (e: Exception) {
+                conn.rollback()
+                throw e
             }
-            sql = "DELETE FROM Pedido WHERE id = ?"
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, id)
-                stmt.executeUpdate()
-            }
-            conn.commit()
         }
     }
 
@@ -94,13 +106,14 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         return pedidos
     }
 
-    override fun updatePedido(precioTotal: Double, id: Int) {
+    override fun updatePedido(precioTotal: Double, id: Int): Boolean {
         val sql = "UPDATE Pedido SET precioTotal = ? WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setDouble(1, precioTotal)
                 stmt.setInt(2, id)
-                stmt.executeUpdate()
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }

@@ -19,7 +19,7 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         dao.insertarCampo(idUsuario, precio)
     }
 
-    override fun obtenerPorId(id: Int): Pedido {
+    override fun obtenerPorId(id: Int): Pedido? {
         require(id > 0){ "El ID debe ser mayor que 0." }
         return dao.getById(id)
     }
@@ -49,9 +49,9 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
      * @param id ID del pedido que se desea eliminar.
      * @throws IllegalArgumentException Si el ID proporcionado no es mayor que 0.
      */
-    override fun eliminarPedidoConLinea(id: Int) {
+    override fun eliminarPedidoConLinea(id: Int): Boolean {
         require(id > 0) { "El ID debe ser mayor que 0." }
-        dao.deletePedidoConLineas(id)
+        return dao.deletePedidoConLineas(id)
     }
 
     override fun obtenerPedidosPorNombreUsuario(nombre: String): List<Pedido> {
@@ -59,10 +59,10 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         return dao.getPedidosPorNombreUsuario(nombre)
     }
 
-    override fun actualizarPedido(precioTotal: Double, id: Int) {
+    override fun actualizarPedido(precioTotal: Double, id: Int): Boolean {
         require(precioTotal > 0){ "El precio debe ser mayor que 0." }
         require(id > 0) { "El ID debe ser mayor que 0." }
-        dao.updatePedido(precioTotal, id)
+        return dao.updatePedido(precioTotal, id)
     }
 
 }

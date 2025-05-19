@@ -1,11 +1,12 @@
 package es.prog2425.ejerciciosBD9_1
 
-import es.prog2425.ejerciciosBD9_1.app.ProductosManager
-import es.prog2425.ejerciciosBD9_1.app.UsuariosManager
+import es.prog2425.ejerciciosBD9_1.app.PedidosManager
+import es.prog2425.ejerciciosBD9_1.data.dao.PedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.ProductoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.UsuarioDAOH2
 import es.prog2425.ejerciciosBD9_1.data.db.DataSourceFactory
 import es.prog2425.ejerciciosBD9_1.data.db.Mode
+import es.prog2425.ejerciciosBD9_1.service.PedidoService
 import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.UI
@@ -23,7 +24,8 @@ fun main() {
     val usuarioService = UsuarioService(usuarioDao)
     val productoDao = ProductoDAOH2(dataSource)
     val productoService = ProductoService(productoDao)
+    val pedidoDao = PedidoDAOH2(dataSource)
+    val pedidoService = PedidoService(pedidoDao)
 
-    ProductosManager(productoService, consola).programaProductos()
-
+    PedidosManager(pedidoService, consola ,usuarioService).programaPedidos()
 }
