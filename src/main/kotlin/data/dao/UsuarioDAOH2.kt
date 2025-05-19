@@ -41,11 +41,7 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
                 stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
                     return if (rs.next()) {
-                        Usuario(
-                            rs.getInt("id"),
-                            rs.getString("nombre"),
-                            rs.getString("email")
-                        )
+                        Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email"))
                     } else {
                         null
                     }

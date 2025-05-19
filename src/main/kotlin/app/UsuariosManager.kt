@@ -28,7 +28,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
     }
 
     private fun mostrarMenu(){
-        println("""
+        ui.mostrar("""
                 ----MENÚ USUARIOS----
                 1. Listar Usuarios
                 2. Buscar Usuario por ID
