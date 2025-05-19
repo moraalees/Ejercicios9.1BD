@@ -2,6 +2,15 @@ package es.prog2425.ejerciciosBD9_1.app
 
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 
+/**
+ * Clase que simula el programa principal.
+ *
+ * @param managerUsuarios Gestor de las operaciones relacionadas con los usuarios.
+ * @param managerProductos Gestor de las operaciones relacionadas con los productos.
+ * @param managerPedidos Gestor de las operaciones relacionadas con los pedidos.
+ * @param managerLineas Gestor de las operaciones relacionadas con las líneas de pedido.
+ * @param ui Interfaz para la interacción con el usuario.
+ */
 class ProgramaManager(
     private val managerUsuarios: UsuariosManager,
     private val managerProductos: ProductosManager,
@@ -9,9 +18,13 @@ class ProgramaManager(
     private val managerLineas: LineaPedidosManager,
     private val ui: IEntradaSalida
 ) {
-
+    //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
 
+    /**
+     * Inicia el programa principal, mostrando el menú y
+     * permitiendo navegar por los diferentes módulos.
+     */
     fun programa(){
         while (!salir) {
             ui.limpiarPantalla(10)
@@ -29,6 +42,9 @@ class ProgramaManager(
         }
     }
 
+    /**
+     * Muestra el menú principal del sistema.
+     */
     private fun mostrarMenu(){
         ui.mostrar("""
             ----MENÚ APP----
@@ -40,10 +56,12 @@ class ProgramaManager(
         """.trimIndent())
     }
 
+    /**
+     * Marca la bandera de salida y muestra un mensaje de cierre del programa.
+     */
     private fun salirPrograma(){
         ui.saltoLinea()
         ui.mostrar("Saliendo del programa...")
         salir = true
     }
-
 }

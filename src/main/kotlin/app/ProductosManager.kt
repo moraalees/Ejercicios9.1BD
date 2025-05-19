@@ -4,9 +4,20 @@ import es.prog2425.ejerciciosBD9_1.service.IProductoService
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 import java.sql.SQLException
 
+/**
+ * Clase encargada de gestionar el menú de operaciones relacionadas con productos.
+ *
+ * @param servicio Servicio que proporciona las operaciones CRUD sobre productos.
+ * @param ui Interfaz para la interacción con el usuario.
+ */
 class ProductosManager(private val servicio: IProductoService, private val ui: IEntradaSalida) {
+    //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
 
+    /**
+     * Inicia el ciclo principal del programa de productos.
+     * Muestra el menú y responde a la opción seleccionada por el usuario.
+     */
     fun programaProductos(){
         while (!salir) {
             ui.limpiarPantalla(10)
@@ -26,6 +37,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         }
     }
 
+    /**
+     * Muestra el menú de opciones disponibles para la gestión de productos.
+     */
     private fun mostrarMenu(){
         ui.mostrar("""
                 ----MENÚ PRODUCTOS----
@@ -39,6 +53,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         )
     }
 
+    /**
+     * Obtiene todos los productos y los muestra al usuario.
+     */
     private fun mostrarProductos(){
         ui.saltoLinea()
         try {
@@ -55,7 +72,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         }
     }
 
-
+    /**
+     * Busca un producto por su ID y lo muestra si existe.
+     */
     private fun obtenerProducto(){
         ui.saltoLinea()
         val idProducto = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
@@ -79,6 +98,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         }
     }
 
+    /**
+     * Solicita al usuario los datos de un nuevo producto y lo agrega al sistema.
+     */
     private fun agregarProducto(){
         ui.saltoLinea()
         val nombre = ui.entrada("Ingrese el nombre del nuevo producto: ")
@@ -100,6 +122,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         }
     }
 
+    /**
+     * Elimina un producto existente basado en su ID.
+     */
     private fun eliminarProducto(){
         ui.saltoLinea()
         val idProducto = ui.entrada("Ingrese el ID del producto a eliminar: ").toIntOrNull()
@@ -124,6 +149,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         }
     }
 
+    /**
+     * Actualiza el precio de un producto existente.
+     */
     private fun actualizarPrecio(){
         ui.saltoLinea()
         val idProducto = ui.entrada("Ingrese el ID del producto a modificar: ").toIntOrNull()
@@ -153,6 +181,9 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
         }
     }
 
+    /**
+     * Sale del programa de gestión de productos.
+     */
     private fun salirPrograma(){
         ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")

@@ -5,14 +5,24 @@ import es.prog2425.ejerciciosBD9_1.service.IUsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 import java.sql.SQLException
 
+/**
+ * Clase encargada de gestionar la interacción con pedidos desde la terminal del IDE.
+ *
+ * @param servicio Servicio para operaciones con pedidos.
+ * @param ui Interfaz para la interacción con el usuario.
+ * @param servicioUsuario Servicio para operaciones con usuarios.
+ */
 class PedidosManager(
     private val servicio: IPedidoService,
     private val ui: IEntradaSalida,
     private val servicioUsuario: IUsuarioService
 ) {
-
+    //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
 
+    /**
+     * Inicia el bucle del menú principal para la gestión de pedidos.
+     */
     fun programaPedidos(){
         while (!salir) {
             ui.limpiarPantalla(10)
@@ -34,6 +44,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Muestra el menú con las opciones disponibles para gestionar pedidos.
+     */
     private fun mostrarMenu(){
         ui.mostrar("""
                 ----MENÚ PEDIDOS----
@@ -49,6 +62,9 @@ class PedidosManager(
         )
     }
 
+    /**
+     * Muestra todos los pedidos registrados en la BD.
+     */
     private fun mostrarPedidos(){
         ui.saltoLinea()
         try {
@@ -65,6 +81,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Obtiene un pedido por su ID y lo muestra si existe.
+     */
     private fun obtenerProducto(){
         ui.saltoLinea()
         val idPedido = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
@@ -88,6 +107,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Permite al usuario añadir un nuevo pedido si el usuario relacionado existe.
+     */
     private fun agregarPedido(){
         ui.saltoLinea()
         val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
@@ -111,6 +133,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Elimina un pedido existente según el ID ingresado por el usuario.
+     */
     private fun eliminarPedido(){
         ui.saltoLinea()
         val idPedido = ui.entrada("Ingrese el ID del pedido a eliminar: ").toIntOrNull()
@@ -135,6 +160,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Permite modificar el precio total de un pedido existente.
+     */
     private fun actualizarPrecio(){
         ui.saltoLinea()
         val idPedido = ui.entrada("Ingrese el ID del pedido a modificar: ").toIntOrNull()
@@ -164,6 +192,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Obtiene y muestra el importe total acumulado de pedidos de un usuario específico.
+     */
     private fun obtenerImporte(){
         ui.saltoLinea()
         val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
@@ -181,6 +212,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Muestra todos los pedidos asociados a un usuario ingresado por el usuario.
+     */
     private fun pedidosPorUsuario(){
         ui.saltoLinea()
         val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
@@ -205,6 +239,9 @@ class PedidosManager(
         }
     }
 
+    /**
+     * Finaliza el programa y sale del menú de gestión de pedidos.
+     */
     private fun salirPrograma(){
         ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")
