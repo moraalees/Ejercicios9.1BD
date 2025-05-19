@@ -136,8 +136,8 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
                 ui.mostrarError("El precio es nulo...")
             } else {
                 try {
-                    val eliminado = servicio.modificarProducto(idProducto, precio)
-                    if (eliminado) {
+                    val modificado = servicio.modificarProducto(idProducto, precio)
+                    if (modificado) {
                         ui.mostrar("Producto modificado con éxito!")
                     } else {
                         ui.mostrar("No se encontró un producto con ese ID.")

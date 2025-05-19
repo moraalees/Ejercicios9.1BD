@@ -123,7 +123,7 @@ class PedidosManager(
                 if (eliminado) {
                     ui.mostrar("Pedido eliminado con éxito!")
                 } else {
-                    ui.mostrar("No se encontró un pedido con ese ID.")
+                    ui.mostrar("No se encontró un pedido con ese ID...")
                 }
             } catch (e: IllegalArgumentException) {
                 ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -142,13 +142,13 @@ class PedidosManager(
         if (idPedido == null){
             ui.mostrarError("El ID es nulo...")
         } else {
-            val precio = ui.entrada("Ingrese el nuevo pedido del producto: ").toDoubleOrNull()
+            val precio = ui.entrada("Ingrese el nuevo precio del pedido: ").toDoubleOrNull()
             if (precio == null) {
                 ui.mostrarError("El precio es nulo...")
             } else {
                 try {
-                    val eliminado = servicio.actualizarPedido(precio, idPedido)
-                    if (eliminado) {
+                    val modificado = servicio.actualizarPedido(precio, idPedido)
+                    if (modificado) {
                         ui.mostrar("Pedido modificado con éxito!")
                     } else {
                         ui.mostrar("No se encontró un pedido con ese ID.")
