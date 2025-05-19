@@ -10,7 +10,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
 
     fun programaUsuarios() {
         while (!salir) {
-            ui.limpiarPantalla(20)
+            ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
             val entrada = ui.entrada("Elige una opción:")

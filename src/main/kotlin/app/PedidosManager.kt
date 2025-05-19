@@ -15,7 +15,7 @@ class PedidosManager(
 
     fun programaPedidos(){
         while (!salir) {
-            ui.limpiarPantalla(20)
+            ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
             val entrada = ui.entrada("Elige una opción:")
@@ -91,7 +91,7 @@ class PedidosManager(
     private fun agregarPedido(){
         ui.saltoLinea()
         val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
-        val idUsuario = ui.entrada("Ingrese el ID del nuevo pedido: ").toIntOrNull()
+        val idUsuario = ui.entrada("Ingrese el ID del usuario relacionado: ").toIntOrNull()
         if (precio == null || idUsuario == null){
             ui.mostrarError("El precio / ID de Usuario no puede ser nulo...")
         } else {
@@ -166,35 +166,42 @@ class PedidosManager(
 
     private fun obtenerImporte(){
         ui.saltoLinea()
-        val nombre = ui.entrada("Introduce el nombre del usuario: ")
-        try {
-            val total = servicio.obtenerImportePedidosPorUsuario(nombre)
-            ui.mostrar("El importe total de pedidos para '$nombre' es: $total.")
-        } catch (e: SQLException) {
-            ui.mostrarError("Error al consultar el importe total: ${e.message}")
-        } catch (e: Exception) {
-            ui.mostrarError("Error inesperado: ${e.message}")
+        val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
+        if (idUsuario == null){
+            ui.mostrarError("El ID debe ser válido...")
+        } else {
+            try {
+                val total = servicio.obtenerImportePedidosPorUsuario(idUsuario)
+                ui.mostrar("El importe total de pedidos para el usuario $idUsuario es: $total.")
+            } catch (e: SQLException) {
+                ui.mostrarError("Error al consultar el importe total: ${e.message}")
+            } catch (e: Exception) {
+                ui.mostrarError("Error inesperado: ${e.message}")
+            }
         }
     }
 
     private fun pedidosPorUsuario(){
         ui.saltoLinea()
-        val nombre = ui.entrada("Introduce el nombre del usuario: ")
-
-        try {
-            val pedidos = servicio.obtenerPedidosPorNombreUsuario(nombre)
-            if (pedidos.isEmpty()) {
-                ui.mostrar("No se encontraron pedidos para el usuario '$nombre'...")
-            } else {
-                ui.mostrar("Pedidos de '$nombre':")
-                pedidos.forEach { it ->
-                    ui.mostrar("ID: ${it.id}, Precio: ${it.precioTotal}, ID Usuario: ${it.idUsuario}")
+        val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
+        if (idUsuario == null){
+            ui.mostrarError("El ID es inválido...")
+        } else {
+            try {
+                val pedidos = servicio.obtenerPedidosPorNombreUsuario(idUsuario)
+                if (pedidos.isEmpty()) {
+                    ui.mostrar("No se encontraron pedidos para el usuario con ID $idUsuario...")
+                } else {
+                    ui.mostrar("Pedidos del usuario con ID $idUsuario:")
+                    pedidos.forEach { it ->
+                        ui.mostrar("ID: ${it.id}, Precio: ${it.precioTotal}, ID Usuario: ${it.idUsuario}")
+                    }
                 }
+            } catch (e: SQLException) {
+                ui.mostrarError("Error al consultar los pedidos: ${e.message}")
+            } catch (e: Exception) {
+                ui.mostrarError("Error inesperado: ${e.message}")
             }
-        } catch (e: SQLException) {
-            ui.mostrarError("Error al consultar los pedidos: ${e.message}")
-        } catch (e: Exception) {
-            ui.mostrarError("Error inesperado: ${e.message}")
         }
     }
 

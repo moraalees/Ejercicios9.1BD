@@ -6,8 +6,8 @@ interface IPedidoDAO {
     fun insertarCampo(idUsuario: Int, precio: Double)
     fun getAll(): List<Pedido>
     fun getById(id: Int): Pedido?
-    fun getPedidosPorNombreUsuario(nombre: String): List<Pedido>
-    fun getTotalImporteByNombreUsuario(nombre: String): Double
+    fun getPedidosPorNombreUsuario(id: Int): List<Pedido>
+    fun getTotalImporteById(id: Int): Double
     fun deletePedidoConLineas(id: Int): Boolean
     fun updatePedido(precioTotal: Double, id: Int): Boolean
 }

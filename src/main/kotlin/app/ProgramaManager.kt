@@ -14,7 +14,7 @@ class ProgramaManager(
 
     fun programa(){
         while (!salir) {
-            ui.limpiarPantalla(20)
+            ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
             val entrada = ui.entrada("Elige una opción:")

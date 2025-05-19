@@ -50,11 +50,11 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         return listaPedidos
     }
 
-    override fun getTotalImporteByNombreUsuario(nombre: String): Double {
-        val sql = "SELECT SUM(P.precioTotal) AS total FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.nombre = ?"
+    override fun getTotalImporteById(id: Int): Double {
+        val sql = "SELECT SUM(P.precioTotal) AS total FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, nombre)
+                stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
                     if (rs.next()) {
                         return rs.getDouble("total")
@@ -90,12 +90,12 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
         }
     }
 
-    override fun getPedidosPorNombreUsuario(nombre: String): List<Pedido> {
+    override fun getPedidosPorNombreUsuario(id: Int): List<Pedido> {
         val pedidos = mutableListOf<Pedido>()
-        val sql = "SELECT P.id, P.precioTotal, P.idUsuario FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.nombre = ?"
+        val sql = "SELECT P.id, P.precioTotal, P.idUsuario FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, nombre)
+                stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
                     while (rs.next()) {
                         pedidos.add(Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario")))

@@ -9,7 +9,7 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
 
     fun programaProductos(){
         while (!salir) {
-            ui.limpiarPantalla(20)
+            ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
             val entrada = ui.entrada("Elige una opción:")
