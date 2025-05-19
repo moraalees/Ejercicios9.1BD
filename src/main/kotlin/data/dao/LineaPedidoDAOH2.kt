@@ -38,13 +38,17 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         return listaLineasPedido
     }
 
-    override fun getById(id: Int): LineaPedido {
+    override fun getById(id: Int): LineaPedido? {
         val sql = "SELECT * FROM LineaPedido WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
-                    return LineaPedido(rs.getInt("id"), rs.getInt("cantidad"), rs.getDouble("precio"), rs.getInt("idPedido"), rs.getInt("idProducto"))
+                    return if (rs.next()){
+                        LineaPedido(rs.getInt("id"), rs.getInt("cantidad"), rs.getDouble("precio"), rs.getInt("idPedido"), rs.getInt("idProducto"))
+                    } else {
+                        null
+                    }
                 }
             }
         }
@@ -66,23 +70,25 @@ class LineaPedidoDAOH2(private val ds: DataSource) : ILineaPedidoDAO{
         return lineas
     }
 
-    override fun updateLinea(precio: Double, id: Int) {
+    override fun updateLinea(precio: Double, id: Int): Boolean {
         val sql = "UPDATE LineaPedido SET precio = ? WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setDouble(1, precio)
                 stmt.setInt(2, id)
-                stmt.executeUpdate()
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }
 
-    override fun deleteLinea(id: Int) {
+    override fun deleteLinea(id: Int): Boolean {
         val sql = "DELETE FROM LineaPedido WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
-                stmt.executeUpdate()
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }

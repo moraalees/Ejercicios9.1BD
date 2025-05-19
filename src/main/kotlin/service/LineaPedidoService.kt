@@ -38,7 +38,7 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
     override fun obtenerLineasPedido(): List<LineaPedido> = dao.getAll()
 
 
-    override fun obtenerLineaById(id: Int): LineaPedido {
+    override fun obtenerLineaById(id: Int): LineaPedido? {
         require(id > 0){ "El ID debe ser mayor que 0." }
         return dao.getById(id)
     }
@@ -56,16 +56,16 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         return dao.getLineasByPedido(id)
     }
 
-    override fun actualizarLinea(precio: Double, id: Int) {
+    override fun actualizarLinea(precio: Double, id: Int): Boolean {
         require(precio > 0){ "El precio debe ser mayor que 0." }
         require(id > 0){ "El id debe ser mayor que 0." }
-        dao.updateLinea(precio, id)
+        return dao.updateLinea(precio, id)
     }
 
 
-    override fun eliminarLinea(id: Int) {
+    override fun eliminarLinea(id: Int): Boolean {
         require(id > 0){ "El id debe ser mayor que 0." }
-        dao.deleteLinea(id)
+        return dao.deleteLinea(id)
     }
 
 }
