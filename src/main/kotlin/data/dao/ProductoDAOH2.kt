@@ -17,13 +17,17 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         }
     }
 
-    override fun getById(id: Int): Producto {
+    override fun getById(id: Int): Producto? {
         val sql = "SELECT * FROM Producto WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
                 stmt.executeQuery().use { rs ->
-                    return Producto(rs.getInt("id"), rs.getString("nombre"), rs.getDouble("precio"), rs.getInt("stock"))
+                    return if (rs.next()){
+                        Producto(rs.getInt("id"), rs.getString("nombre"), rs.getDouble("precio"), rs.getInt("stock"))
+                    } else {
+                        null
+                    }
                 }
             }
         }
@@ -48,23 +52,25 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         return listaProductos
     }
 
-    override fun deleteByPrecio(precio: Double) {
-        val sql = "DELETE FROM Producto WHERE precio = ?"
+    override fun deleteByPrecio(id: Int): Boolean {
+        val sql = "DELETE FROM Producto WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setDouble(1, precio)
-                stmt.executeUpdate()
+                stmt.setInt(1, id)
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }
 
-    override fun modifyProducto(id: Int, nuevoPrecio: Double) {
+    override fun modifyProducto(id: Int, nuevoPrecio: Double): Boolean {
         val sql = "UPDATE Producto SET precio = ? WHERE id = ?"
         ds.connection.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setDouble(1, nuevoPrecio)
                 stmt.setInt(2, id)
-                stmt.executeUpdate()
+                val modificacion = stmt.executeUpdate()
+                return modificacion > 0
             }
         }
     }

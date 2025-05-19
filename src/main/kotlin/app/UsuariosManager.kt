@@ -68,7 +68,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
                 if (usuario != null){
                     ui.mostrar("ID: ${usuario.id}, Nombre: ${usuario.nombre}, Correo: ${usuario.correo}")
                 } else {
-                    ui.mostrarError("El usuario no existe.")
+                    ui.mostrarError("El usuario no existe...")
                 }
             } catch (e: SQLException){
                 ui.mostrarError("Problemas al buscar el usuario: ${e.message}")
@@ -105,7 +105,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
             try {
                 val eliminado = servicio.eliminarPorId(idUsuario)
                 if (eliminado) {
-                    ui.mostrar("Estudiante eliminado con éxito!")
+                    ui.mostrar("Usuario eliminado con éxito!")
                 } else {
                     ui.mostrar("No se encontró un usuario con ese ID.")
                 }

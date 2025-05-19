@@ -5,7 +5,7 @@ import es.prog2425.ejerciciosBD9_1.model.Producto
 interface IProductoService {
     fun addProducto(nombre: String, precio: Double, stock: Int)
     fun obtenerProductos(): List<Producto>
-    fun obtenerPorId(id: Int): Producto
-    fun eliminarProducto(precio: Double)
-    fun modificarProducto(id: Int, precio: Double)
+    fun obtenerPorId(id: Int): Producto?
+    fun eliminarProducto(id: Int): Boolean
+    fun modificarProducto(id: Int, precio: Double): Boolean
 }
