@@ -3,8 +3,19 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 import es.prog2425.ejerciciosBD9_1.model.Usuario
 import javax.sql.DataSource
 
+/**
+ * Implementación de [IUsuarioDAO] que gestiona operaciones en la BD.
+ *
+ * @param ds Fuente de datos para obtener las conexiones a la base de datos.
+ */
 class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
 
+    /**
+     * Inserta un nuevo [Usuario] en la base de datos.
+     *
+     * @param nombre Nombre del usuario.
+     * @param email Dirección de correo electrónico del usuario.
+     */
     override fun insertarCampo(nombre: String, email: String) {
         val sql = "INSERT INTO Usuario (nombre, email) VALUES (?, ?)"
         ds.connection.use { connection ->
@@ -16,6 +27,11 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
         }
     }
 
+    /**
+     * Recupera todos los usuarios registrados en la base de datos.
+     *
+     * @return Lista de objetos [Usuario].
+     */
     override fun getAll(): List<Usuario> {
         val listaUsuarios = mutableListOf<Usuario>()
         val sql = "SELECT * FROM Usuario"
@@ -34,6 +50,12 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
         return listaUsuarios
     }
 
+    /**
+     * Recupera un [Usuario] por su ID.
+     *
+     * @param id ID del usuario.
+     * @return Objeto [Usuario] si se encuentra, o `null` si no existe.
+     */
     override fun getById(id: Int): Usuario? {
         val sql = "SELECT * FROM Usuario WHERE id = ?"
         ds.connection.use { conn ->
@@ -50,6 +72,13 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
         }
     }
 
+    /**
+     * Actualiza el nombre de un usuario existente.
+     *
+     * @param nombre Nuevo nombre del usuario.
+     * @param id ID del usuario a actualizar.
+     * @return Boolean: true si se modificó al menos un registro o false si no se encontró el usuario.
+     */
     override fun updateUsuario(nombre: String, id: Int): Boolean {
         val sql = "UPDATE Usuario SET nombre = ? WHERE id = ?"
         ds.connection.use { conn ->
@@ -62,6 +91,12 @@ class UsuarioDAOH2(private val ds: DataSource) : IUsuarioDAO {
         }
     }
 
+    /**
+     * Elimina un [Usuario] por su ID.
+     *
+     * @param id ID del usuario a eliminar.
+     * @return Boolean: true si se eliminó al menos un registro o false si no se encontró el usuario.
+     */
     override fun deleteById(id: Int): Boolean {
         val sql = "DELETE FROM Usuario WHERE id = ?"
         ds.connection.use { conn ->

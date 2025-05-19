@@ -4,7 +4,7 @@ import es.prog2425.ejerciciosBD9_1.model.LineaPedido
 import javax.sql.DataSource
 
 /**
- * Implementa [ILineaPedidoDAO] que gestiona el acceso a la base de datos
+ * Implementa [ILineaPedidoDAO] que gestiona el acceso a la BD
  * para operaciones utilizando H2.
  *
  * @param ds Fuente de datos para obtener las conexiones a la base de datos.

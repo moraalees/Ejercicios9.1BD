@@ -3,8 +3,20 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 import es.prog2425.ejerciciosBD9_1.model.Producto
 import javax.sql.DataSource
 
+/**
+ * Implementación de [IProductoDAO] que maneja las operaciones en la BD
+ *
+ * @param ds Fuente de datos utilizada para obtener conexiones a la base de datos.
+ */
 class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
 
+    /**
+     * Inserta un nuevo [Producto] en la base de datos.
+     *
+     * @param nombre Nombre del producto.
+     * @param precio Precio del producto.
+     * @param stock Cantidad disponible en inventario.
+     */
     override fun insertarCampo(nombre: String, precio: Double, stock: Int) {
         val sql = "INSERT INTO Producto (nombre, precio, stock) VALUES (?, ?, ?)"
         ds.connection.use { conn ->
@@ -17,6 +29,12 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         }
     }
 
+    /**
+     * Recupera un [Producto] por su ID.
+     *
+     * @param id ID del producto.
+     * @return Objeto [Producto] si se encuentra, o `null` si no existe.
+     */
     override fun getById(id: Int): Producto? {
         val sql = "SELECT * FROM Producto WHERE id = ?"
         ds.connection.use { conn ->
@@ -33,6 +51,11 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         }
     }
 
+    /**
+     * Recupera todos los productos disponibles en la base de datos.
+     *
+     * @return Lista de objetos [Producto].
+     */
     override fun getAll(): List<Producto> {
         val listaProductos = mutableListOf<Producto>()
         val sql = "SELECT * FROM Producto"
@@ -52,6 +75,12 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         return listaProductos
     }
 
+    /**
+     * Elimina un [Producto] de la base de datos según su ID.
+     *
+     * @param id ID del producto que se desea eliminar.
+     * @return Boolean: true si se eliminó algún registro o false si no se encontró el producto.
+     */
     override fun deleteByPrecio(id: Int): Boolean {
         val sql = "DELETE FROM Producto WHERE id = ?"
         ds.connection.use { conn ->
@@ -63,6 +92,13 @@ class ProductoDAOH2(private val ds: DataSource) : IProductoDAO {
         }
     }
 
+    /**
+     * Modifica el precio de un [Producto] identificado por su ID.
+     *
+     * @param id ID del producto a actualizar.
+     * @param nuevoPrecio Nuevo precio a establecer.
+     * @return Boolean: true si se modificó algún registro o false si no se encontró el producto.
+     */
     override fun modifyProducto(id: Int, nuevoPrecio: Double): Boolean {
         val sql = "UPDATE Producto SET precio = ? WHERE id = ?"
         ds.connection.use { conn ->
