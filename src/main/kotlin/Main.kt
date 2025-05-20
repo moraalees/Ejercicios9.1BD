@@ -17,6 +17,9 @@ import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.UI
 
+//Meter Transacciones
+//Insertar cuantos usuarios/pedidos/productos/lineas quieras
+
 /**
  * Función principal del programa
  *
