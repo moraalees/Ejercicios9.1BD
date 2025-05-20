@@ -103,18 +103,29 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
      */
     private fun agregarUsuario() {
         ui.saltoLinea()
-        val nombreUsuario = ui.entrada("Ingrese el nombre del nuevo usuario: ")
-        val correoUsuario = ui.entrada("Ingrese el E-mail del nuevo usuario: ")
 
-        try {
-            servicio.addUsuario(nombreUsuario, correoUsuario)
-            ui.mostrar("Usuario añadido con éxito!")
-        } catch (e: IllegalArgumentException) {
-            ui.mostrarError("Argumentos inválidos: ${e.message}")
-        } catch (e: Exception) {
-            ui.mostrarError("Error inesperado: ${e.message}")
-        } catch (e: SQLException) {
-            ui.mostrarError("Error al añadir el usuario: ${e.message}")
+        val entrada = ui.entrada("Ingrese el número de usuarios a agregar:").toIntOrNull()
+
+        if (entrada == null || entrada < 1){
+            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
+        } else {
+            var contador = 1
+            while (contador <= entrada){
+                contador ++
+                val nombreUsuario = ui.entrada("Ingrese el nombre del nuevo usuario: ")
+                val correoUsuario = ui.entrada("Ingrese el E-mail del nuevo usuario: ")
+
+                try {
+                    servicio.addUsuario(nombreUsuario, correoUsuario)
+                    ui.mostrar("Usuario añadido con éxito!")
+                } catch (e: IllegalArgumentException) {
+                    ui.mostrarError("Argumentos inválidos: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al añadir el usuario: ${e.message}")
+                }
+            }
         }
     }
 
