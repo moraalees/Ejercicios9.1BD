@@ -85,24 +85,33 @@ class PedidosManager(
      * Obtiene un pedido por su ID y lo muestra si existe.
      */
     private fun obtenerProducto(){
-        ui.saltoLinea()
-        val idPedido = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
+        var salirObtener = false
 
-        if (idPedido == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            try {
-                val pedido = servicio.obtenerPorId(idPedido)
+        while (!salirObtener){
+            ui.saltoLinea()
+            val idPedido = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
 
-                if (pedido != null){
-                    ui.mostrar("ID: ${pedido.id}, Precio: ${pedido.precioTotal}, ID Usuario: ${pedido.idUsuario}")
-                } else {
-                    ui.mostrarError("El pedido no existe...")
+            if (idPedido == null){
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                try {
+                    val pedido = servicio.obtenerPorId(idPedido)
+
+                    if (pedido != null){
+                        ui.mostrar("ID: ${pedido.id}, Precio: ${pedido.precioTotal}, ID Usuario: ${pedido.idUsuario}")
+                    } else {
+                        ui.mostrarError("El pedido no existe...")
+                    }
+                } catch (e: SQLException){
+                    ui.mostrarError("Problemas al buscar el pedido: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Problema inesperado: ${e.message}")
                 }
-            } catch (e: SQLException){
-                ui.mostrarError("Problemas al buscar el pedido: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Problema inesperado: ${e.message}")
+            }
+
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirObtener = true
             }
         }
     }
@@ -111,36 +120,44 @@ class PedidosManager(
      * Permite al usuario añadir un nuevo pedido si el usuario relacionado existe.
      */
     private fun agregarPedido(){
-        ui.saltoLinea()
+        var salirAgregar = false
 
-        val entrada = ui.entrada("Ingrese el número de productos a agregar:").toIntOrNull()
+        while (!salirAgregar){
+            ui.saltoLinea()
 
-        if (entrada == null || entrada < 1){
-            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
-        } else {
-            var contador = 1
-            while (contador <= entrada){
-                contador++
-                ui.saltoLinea()
-                val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
-                val idUsuario = ui.entrada("Ingrese el ID del usuario relacionado: ").toIntOrNull()
-                if (precio == null || idUsuario == null){
-                    ui.mostrarError("El precio / ID de Usuario no puede ser nulo...")
-                } else {
-                    val usuarioId = servicioUsuario.obtenerUsuario(idUsuario)
-                    if (usuarioId == null){
-                        ui.mostrarError("No existe un usuario con ese ID...")
+            val entrada = ui.entrada("Ingrese el número de pedidos a agregar:").toIntOrNull()
+
+            if (entrada == null || entrada < 1){
+                ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
+            } else {
+                var contador = 1
+                while (contador <= entrada){
+                    contador++
+                    ui.saltoLinea()
+                    val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
+                    val idUsuario = ui.entrada("Ingrese el ID del usuario relacionado: ").toIntOrNull()
+                    if (precio == null || idUsuario == null){
+                        ui.mostrarError("El precio / ID de Usuario no puede ser nulo...")
                     } else {
-                        try {
-                            servicio.addPedido(idUsuario ,precio)
-                            ui.mostrar("Pedido agregado con éxito!")
-                        } catch (e: SQLException) {
-                            ui.mostrarError("Error al agregar el pedido: ${e.message}")
-                        } catch (e: Exception) {
-                            ui.mostrarError("Error inesperado: ${e.message}")
+                        val usuarioId = servicioUsuario.obtenerUsuario(idUsuario)
+                        if (usuarioId == null){
+                            ui.mostrarError("No existe un usuario con ese ID...")
+                        } else {
+                            try {
+                                servicio.addPedido(idUsuario ,precio)
+                                ui.mostrar("Pedido agregado con éxito!")
+                            } catch (e: SQLException) {
+                                ui.mostrarError("Error al agregar el pedido: ${e.message}")
+                            } catch (e: Exception) {
+                                ui.mostrarError("Error inesperado: ${e.message}")
+                            }
                         }
                     }
                 }
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirAgregar = true
             }
         }
     }
@@ -149,25 +166,34 @@ class PedidosManager(
      * Elimina un pedido existente según el ID ingresado por el usuario.
      */
     private fun eliminarPedido(){
-        ui.saltoLinea()
-        val idPedido = ui.entrada("Ingrese el ID del pedido a eliminar: ").toIntOrNull()
+        var salirEliminar = false
 
-        if (idPedido == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            try {
-                val eliminado = servicio.eliminarPedidoConLinea(idPedido)
-                if (eliminado) {
-                    ui.mostrar("Pedido eliminado con éxito!")
-                } else {
-                    ui.mostrar("No se encontró un pedido con ese ID...")
+        while (!salirEliminar){
+            ui.saltoLinea()
+            val idPedido = ui.entrada("Ingrese el ID del pedido a eliminar: ").toIntOrNull()
+
+            if (idPedido == null){
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                try {
+                    val eliminado = servicio.eliminarPedidoConLinea(idPedido)
+                    if (eliminado) {
+                        ui.mostrar("Pedido eliminado con éxito!")
+                    } else {
+                        ui.mostrar("No se encontró un pedido con ese ID...")
+                    }
+                } catch (e: IllegalArgumentException) {
+                    ui.mostrarError("Argumentos inválidos: ${e.message}")
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al eliminar el pedido: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
-            } catch (e: IllegalArgumentException) {
-                ui.mostrarError("Argumentos inválidos: ${e.message}")
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al eliminar el pedido: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirEliminar = true
             }
         }
     }
@@ -176,30 +202,38 @@ class PedidosManager(
      * Permite modificar el precio total de un pedido existente.
      */
     private fun actualizarPrecio(){
-        ui.saltoLinea()
-        val idPedido = ui.entrada("Ingrese el ID del pedido a modificar: ").toIntOrNull()
+        var salirActu = false
 
-        if (idPedido == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            val precio = ui.entrada("Ingrese el nuevo precio del pedido: ").toDoubleOrNull()
-            if (precio == null) {
-                ui.mostrarError("El precio es nulo...")
+        while (!salirActu){
+            ui.saltoLinea()
+            val idPedido = ui.entrada("Ingrese el ID del pedido a modificar: ").toIntOrNull()
+
+            if (idPedido == null){
+                ui.mostrarError("El ID es nulo...")
             } else {
-                try {
-                    val modificado = servicio.actualizarPedido(precio, idPedido)
-                    if (modificado) {
-                        ui.mostrar("Pedido modificado con éxito!")
-                    } else {
-                        ui.mostrar("No se encontró un pedido con ese ID.")
+                val precio = ui.entrada("Ingrese el nuevo precio del pedido: ").toDoubleOrNull()
+                if (precio == null) {
+                    ui.mostrarError("El precio es nulo...")
+                } else {
+                    try {
+                        val modificado = servicio.actualizarPedido(precio, idPedido)
+                        if (modificado) {
+                            ui.mostrar("Pedido modificado con éxito!")
+                        } else {
+                            ui.mostrar("No se encontró un pedido con ese ID.")
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        ui.mostrarError("Argumentos inválidos: ${e.message}")
+                    } catch (e: SQLException) {
+                        ui.mostrarError("Error al modificar el pedido: ${e.message}")
+                    } catch (e: Exception) {
+                        ui.mostrarError("Error inesperado: ${e.message}")
                     }
-                } catch (e: IllegalArgumentException) {
-                    ui.mostrarError("Argumentos inválidos: ${e.message}")
-                } catch (e: SQLException) {
-                    ui.mostrarError("Error al modificar el pedido: ${e.message}")
-                } catch (e: Exception) {
-                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirActu = true
             }
         }
     }
@@ -208,18 +242,27 @@ class PedidosManager(
      * Obtiene y muestra el importe total acumulado de pedidos de un usuario específico.
      */
     private fun obtenerImporte(){
-        ui.saltoLinea()
-        val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
-        if (idUsuario == null){
-            ui.mostrarError("El ID debe ser válido...")
-        } else {
-            try {
-                val total = servicio.obtenerImportePedidosPorUsuario(idUsuario)
-                ui.mostrar("El importe total de pedidos para el usuario $idUsuario es: $total.")
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al consultar el importe total: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+        var salirImporte = false
+
+        while (!salirImporte){
+
+            ui.saltoLinea()
+            val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
+            if (idUsuario == null){
+                ui.mostrarError("El ID debe ser válido...")
+            } else {
+                try {
+                    val total = servicio.obtenerImportePedidosPorUsuario(idUsuario)
+                    ui.mostrar("El importe total de pedidos para el usuario $idUsuario es: $total.")
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al consultar el importe total: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
+                }
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirImporte = true
             }
         }
     }
@@ -228,25 +271,34 @@ class PedidosManager(
      * Muestra todos los pedidos asociados a un usuario ingresado por el usuario.
      */
     private fun pedidosPorUsuario(){
-        ui.saltoLinea()
-        val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
-        if (idUsuario == null){
-            ui.mostrarError("El ID es inválido...")
-        } else {
-            try {
-                val pedidos = servicio.obtenerPedidosPorNombreUsuario(idUsuario)
-                if (pedidos.isEmpty()) {
-                    ui.mostrar("No se encontraron pedidos para el usuario con ID $idUsuario...")
-                } else {
-                    ui.mostrar("Pedidos del usuario con ID $idUsuario:")
-                    pedidos.forEach { it ->
-                        ui.mostrar("ID: ${it.id}, Precio: ${it.precioTotal}, ID Usuario: ${it.idUsuario}")
+        var salirObtenerUsuario = false
+
+        while (!salirObtenerUsuario){
+
+            ui.saltoLinea()
+            val idUsuario = ui.entrada("Introduce el ID del usuario: ").toIntOrNull()
+            if (idUsuario == null){
+                ui.mostrarError("El ID es inválido...")
+            } else {
+                try {
+                    val pedidos = servicio.obtenerPedidosPorNombreUsuario(idUsuario)
+                    if (pedidos.isEmpty()) {
+                        ui.mostrar("No se encontraron pedidos para el usuario con ID $idUsuario...")
+                    } else {
+                        ui.mostrar("Pedidos del usuario con ID $idUsuario:")
+                        pedidos.forEach { it ->
+                            ui.mostrar("ID: ${it.id}, Precio: ${it.precioTotal}, ID Usuario: ${it.idUsuario}")
+                        }
                     }
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al consultar los pedidos: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al consultar los pedidos: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirObtenerUsuario = true
             }
         }
     }

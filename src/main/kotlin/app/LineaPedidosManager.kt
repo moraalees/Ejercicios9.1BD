@@ -88,24 +88,32 @@ class LineaPedidosManager(
      * Solicita un ID de línea al usuario y muestra la línea correspondiente, si existe.
      */
     private fun obtenerLinea(){
-        ui.saltoLinea()
-        val idLinea = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
+        var salirObtener = false
 
-        if (idLinea == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            try {
-                val linea = service.obtenerLineaById(idLinea)
+        while (!salirObtener){
+            ui.saltoLinea()
+            val idLinea = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
 
-                if (linea != null){
-                    ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Pedido: ${linea.idPedido}, ID Producto: ${linea.idProducto}")
-                } else {
-                    ui.mostrarError("La línea no existe...")
+            if (idLinea == null){
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                try {
+                    val linea = service.obtenerLineaById(idLinea)
+
+                    if (linea != null){
+                        ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Pedido: ${linea.idPedido}, ID Producto: ${linea.idProducto}")
+                    } else {
+                        ui.mostrarError("La línea no existe...")
+                    }
+                } catch (e: SQLException){
+                    ui.mostrarError("Problemas al buscar la línea de pedidos: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Problema inesperado: ${e.message}")
                 }
-            } catch (e: SQLException){
-                ui.mostrarError("Problemas al buscar la línea de pedidos: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Problema inesperado: ${e.message}")
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirObtener = true
             }
         }
     }
@@ -114,40 +122,48 @@ class LineaPedidosManager(
      * Permite al usuario crear una nueva línea de pedido tras ingresar los datos requeridos.
      */
     private fun agregarLinea(){
-        ui.saltoLinea()
+        var salirAgregar = false
 
-        val entrada = ui.entrada("Ingrese el número de productos a agregar:").toIntOrNull()
+        while (!salirAgregar){
+            ui.saltoLinea()
 
-        if (entrada == null || entrada < 1){
-            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
-        } else {
-            var contador = 1
-            while (contador <= entrada){
-                contador++
-                ui.saltoLinea()
-                val cantidad = ui.entrada("Ingrese la cantidad de la nueva línea de pedidos: ").toIntOrNull()
-                val precio = ui.entrada("Ingrese el precio de la nueva línea de pedidos: ").toDoubleOrNull()
-                val idPedido = ui.entrada("Ingrese el ID del pedido relacionado: ").toIntOrNull()
-                val idProducto = ui.entrada("Ingrese el ID del producto relacionado: ").toIntOrNull()
+            val entrada = ui.entrada("Ingrese el número de líneas a agregar:").toIntOrNull()
 
-                if (cantidad == null || precio == null || idPedido == null || idProducto == null){
-                    ui.mostrarError("Algún dato fue inválido...")
-                } else {
-                    val pedidoId = servicioPedido.obtenerPorId(idPedido)
-                    val productoId = servicioProducto.obtenerPorId(idProducto)
-                    if (pedidoId == null || productoId == null){
-                        ui.mostrarError("Un ID no existe...")
+            if (entrada == null || entrada < 1){
+                ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
+            } else {
+                var contador = 1
+                while (contador <= entrada){
+                    contador++
+                    ui.saltoLinea()
+                    val cantidad = ui.entrada("Ingrese la cantidad de la nueva línea de pedidos: ").toIntOrNull()
+                    val precio = ui.entrada("Ingrese el precio de la nueva línea de pedidos: ").toDoubleOrNull()
+                    val idPedido = ui.entrada("Ingrese el ID del pedido relacionado: ").toIntOrNull()
+                    val idProducto = ui.entrada("Ingrese el ID del producto relacionado: ").toIntOrNull()
+
+                    if (cantidad == null || precio == null || idPedido == null || idProducto == null){
+                        ui.mostrarError("Algún dato fue inválido...")
                     } else {
-                        try {
-                            service.addLineaPedido(idPedido, idProducto, cantidad, precio)
-                            ui.mostrar("Línea de Pedido agregada éxitosamente!")
-                        } catch (e: SQLException) {
-                            ui.mostrarError("Error al agregar el pedido: ${e.message}")
-                        } catch (e: Exception) {
-                            ui.mostrarError("Error inesperado: ${e.message}")
+                        val pedidoId = servicioPedido.obtenerPorId(idPedido)
+                        val productoId = servicioProducto.obtenerPorId(idProducto)
+                        if (pedidoId == null || productoId == null){
+                            ui.mostrarError("Un ID no existe...")
+                        } else {
+                            try {
+                                service.addLineaPedido(idPedido, idProducto, cantidad, precio)
+                                ui.mostrar("Línea de Pedido agregada éxitosamente!")
+                            } catch (e: SQLException) {
+                                ui.mostrarError("Error al agregar el pedido: ${e.message}")
+                            } catch (e: Exception) {
+                                ui.mostrarError("Error inesperado: ${e.message}")
+                            }
                         }
                     }
                 }
+            }
+            val pregunta = ui.entrada("¿Quiere añadir alguna otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirAgregar = true
             }
         }
     }
@@ -157,25 +173,35 @@ class LineaPedidosManager(
      * Muestra mensajes de éxito o error según corresponda.
      */
     private fun eliminarLinea(){
-        ui.saltoLinea()
-        val idLinea = ui.entrada("Ingrese el ID de la línea a eliminar: ").toIntOrNull()
+        var salirEliminar = false
 
-        if (idLinea == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            try {
-                val eliminado = service.eliminarLinea(idLinea)
-                if (eliminado) {
-                    ui.mostrar("Línea eliminada con éxito!")
-                } else {
-                    ui.mostrar("No se encontró ninguna línea con ese ID...")
+        while (!salirEliminar){
+
+            ui.saltoLinea()
+            val idLinea = ui.entrada("Ingrese el ID de la línea a eliminar: ").toIntOrNull()
+
+            if (idLinea == null){
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                try {
+                    val eliminado = service.eliminarLinea(idLinea)
+                    if (eliminado) {
+                        ui.mostrar("Línea eliminada con éxito!")
+                    } else {
+                        ui.mostrar("No se encontró ninguna línea con ese ID...")
+                    }
+                } catch (e: IllegalArgumentException) {
+                    ui.mostrarError("Argumentos inválidos: ${e.message}")
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al eliminar la línea: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
-            } catch (e: IllegalArgumentException) {
-                ui.mostrarError("Argumentos inválidos: ${e.message}")
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al eliminar la línea: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+
+            val pregunta = ui.entrada("¿Quiere eliminar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirEliminar = true
             }
         }
     }
@@ -184,30 +210,39 @@ class LineaPedidosManager(
      * Actualiza el precio de una línea de pedido a partir del ID y nuevo precio proporcionado por el usuario.
      */
     private fun actualizarLinea(){
-        ui.saltoLinea()
-        val idLinea = ui.entrada("Ingrese el ID de la línea a modificar: ").toIntOrNull()
+        var salirActu = false
 
-        if (idLinea == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            val precio = ui.entrada("Ingrese el nuevo precio de la línea: ").toDoubleOrNull()
-            if (precio == null) {
-                ui.mostrarError("El precio es nulo...")
+        while (!salirActu){
+            ui.saltoLinea()
+            val idLinea = ui.entrada("Ingrese el ID de la línea a modificar: ").toIntOrNull()
+
+            if (idLinea == null){
+                ui.mostrarError("El ID es nulo...")
             } else {
-                try {
-                    val actualizado = service.actualizarLinea(precio, idLinea)
-                    if (actualizado) {
-                        ui.mostrar("Línea modificada con éxito!")
-                    } else {
-                        ui.mostrar("No se encontró ninguna línea con ese ID...")
+                val precio = ui.entrada("Ingrese el nuevo precio de la línea: ").toDoubleOrNull()
+                if (precio == null) {
+                    ui.mostrarError("El precio es nulo...")
+                } else {
+                    try {
+                        val actualizado = service.actualizarLinea(precio, idLinea)
+                        if (actualizado) {
+                            ui.mostrar("Línea modificada con éxito!")
+                        } else {
+                            ui.mostrar("No se encontró ninguna línea con ese ID...")
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        ui.mostrarError("Argumentos inválidos: ${e.message}")
+                    } catch (e: SQLException) {
+                        ui.mostrarError("Error al modificar la línea: ${e.message}")
+                    } catch (e: Exception) {
+                        ui.mostrarError("Error inesperado: ${e.message}")
                     }
-                } catch (e: IllegalArgumentException) {
-                    ui.mostrarError("Argumentos inválidos: ${e.message}")
-                } catch (e: SQLException) {
-                    ui.mostrarError("Error al modificar la línea: ${e.message}")
-                } catch (e: Exception) {
-                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
+            }
+
+            val pregunta = ui.entrada("¿Quiere actualizar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirActu = true
             }
         }
     }
@@ -217,26 +252,34 @@ class LineaPedidosManager(
      * cuyo ID es ingresado por el usuario.
      */
     private fun obtenerLineaPorPedido(){
-        ui.saltoLinea()
-        val idPedido = ui.entrada("Introduce el ID del pedido: ").toIntOrNull()
-        if (idPedido == null){
-            ui.mostrarError("El ID no puede ser nulo...")
-        } else {
-            try {
-                val lineas = service.obtenerLineaPedidoByPedidoId(idPedido)
+        var salirObtenerPedido = false
 
-                if (lineas.isEmpty()) {
-                    ui.mostrar("No se encontraron líneas para el pedido con ID $idPedido...")
-                } else {
-                    ui.mostrar("Líneas del pedido $idPedido:")
-                    lineas.forEach { linea ->
-                        ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Producto: ${linea.idProducto}, ID Pedido: ${linea.idPedido}")
+        while (!salirObtenerPedido){
+            ui.saltoLinea()
+            val idPedido = ui.entrada("Introduce el ID del pedido: ").toIntOrNull()
+            if (idPedido == null){
+                ui.mostrarError("El ID no puede ser nulo...")
+            } else {
+                try {
+                    val lineas = service.obtenerLineaPedidoByPedidoId(idPedido)
+
+                    if (lineas.isEmpty()) {
+                        ui.mostrar("No se encontraron líneas para el pedido con ID $idPedido...")
+                    } else {
+                        ui.mostrar("Líneas del pedido $idPedido:")
+                        lineas.forEach { linea ->
+                            ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Producto: ${linea.idProducto}, ID Pedido: ${linea.idPedido}")
+                        }
                     }
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al consultar las líneas: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al consultar las líneas: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+            val pregunta = ui.entrada("¿Quiere actualizar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirObtenerPedido = true
             }
         }
     }
