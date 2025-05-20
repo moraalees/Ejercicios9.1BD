@@ -77,23 +77,31 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
      * Busca un usuario por su ID e imprime su información si se encuentra.
      */
     private fun buscarUsuario() {
-        ui.saltoLinea()
-        val idUsuario = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
-        if (idUsuario == null) {
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            try {
-                val usuario = servicio.obtenerUsuario(idUsuario)
+        var salirBuscar = false
 
-                if (usuario != null) {
-                    ui.mostrar("ID: ${usuario.id}, Nombre: ${usuario.nombre}, Correo: ${usuario.correo}")
-                } else {
-                    ui.mostrarError("El usuario no existe...")
+        while (!salirBuscar){
+            ui.saltoLinea()
+            val idUsuario = ui.entrada("Introduce el ID para la búsqueda: ").toIntOrNull()
+            if (idUsuario == null) {
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                try {
+                    val usuario = servicio.obtenerUsuario(idUsuario)
+
+                    if (usuario != null) {
+                        ui.mostrar("ID: ${usuario.id}, Nombre: ${usuario.nombre}, Correo: ${usuario.correo}")
+                    } else {
+                        ui.mostrarError("El usuario no existe...")
+                    }
+                } catch (e: SQLException) {
+                    ui.mostrarError("Problemas al buscar el usuario: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Problema inesperado: ${e.message}")
                 }
-            } catch (e: SQLException) {
-                ui.mostrarError("Problemas al buscar el usuario: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Problema inesperado: ${e.message}")
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirBuscar = true
             }
         }
     }
@@ -102,30 +110,39 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
      * Solicita los datos del nuevo usuario al usuario y lo agrega al sistema.
      */
     private fun agregarUsuario() {
-        ui.saltoLinea()
+        var salirAgregar = false
 
-        val entrada = ui.entrada("Ingrese el número de usuarios a agregar:").toIntOrNull()
+        while (!salirAgregar){
+            ui.saltoLinea()
 
-        if (entrada == null || entrada < 1){
-            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
-        } else {
-            var contador = 1
-            while (contador <= entrada){
-                contador ++
-                ui.saltoLinea()
-                val nombreUsuario = ui.entrada("Ingrese el nombre del nuevo usuario: ")
-                val correoUsuario = ui.entrada("Ingrese el E-mail del nuevo usuario: ")
+            val entrada = ui.entrada("Ingrese el número de usuarios a agregar:").toIntOrNull()
 
-                try {
-                    servicio.addUsuario(nombreUsuario, correoUsuario)
-                    ui.mostrar("Usuario añadido con éxito!")
-                } catch (e: IllegalArgumentException) {
-                    ui.mostrarError("Argumentos inválidos: ${e.message}")
-                } catch (e: Exception) {
-                    ui.mostrarError("Error inesperado: ${e.message}")
-                } catch (e: SQLException) {
-                    ui.mostrarError("Error al añadir el usuario: ${e.message}")
+            if (entrada == null || entrada < 1){
+                ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
+            } else {
+                var contador = 1
+                while (contador <= entrada){
+                    contador ++
+                    ui.saltoLinea()
+                    val nombreUsuario = ui.entrada("Ingrese el nombre del nuevo usuario: ")
+                    val correoUsuario = ui.entrada("Ingrese el E-mail del nuevo usuario: ")
+
+                    try {
+                        servicio.addUsuario(nombreUsuario, correoUsuario)
+                        ui.mostrar("Usuario añadido con éxito!")
+                    } catch (e: IllegalArgumentException) {
+                        ui.mostrarError("Argumentos inválidos: ${e.message}")
+                    } catch (e: Exception) {
+                        ui.mostrarError("Error inesperado: ${e.message}")
+                    } catch (e: SQLException) {
+                        ui.mostrarError("Error al añadir el usuario: ${e.message}")
+                    }
                 }
+            }
+
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirAgregar = true
             }
         }
     }
@@ -134,25 +151,33 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
      * Elimina un usuario del sistema mediante su ID.
      */
     private fun eliminarUsuario(){
-        ui.saltoLinea()
-        val idUsuario = ui.entrada("Ingrese el ID a eliminar: ").toIntOrNull()
+        var salirEliminar = false
 
-        if (idUsuario == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            try {
-                val eliminado = servicio.eliminarPorId(idUsuario)
-                if (eliminado) {
-                    ui.mostrar("Usuario eliminado con éxito!")
-                } else {
-                    ui.mostrar("No se encontró un usuario con ese ID.")
+        while (!salirEliminar){
+            ui.saltoLinea()
+            val idUsuario = ui.entrada("Ingrese el ID a eliminar: ").toIntOrNull()
+
+            if (idUsuario == null){
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                try {
+                    val eliminado = servicio.eliminarPorId(idUsuario)
+                    if (eliminado) {
+                        ui.mostrar("Usuario eliminado con éxito!")
+                    } else {
+                        ui.mostrar("No se encontró un usuario con ese ID.")
+                    }
+                } catch (e: IllegalArgumentException) {
+                    ui.mostrarError("Argumentos inválidos: ${e.message}")
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al eliminar el usuario: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
-            } catch (e: IllegalArgumentException) {
-                ui.mostrarError("Argumentos inválidos: ${e.message}")
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al eliminar el usuario: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirEliminar = true
             }
         }
     }
@@ -161,26 +186,35 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
      * Actualiza el nombre de usuario de un usuario existente.
      */
     private fun modificarUsuario(){
-        ui.saltoLinea()
-        val idUsuario = ui.entrada("Ingrese el ID del usuario a modificar: ").toIntOrNull()
+        var salirModificar = false
 
-        if (idUsuario == null){
-            ui.mostrarError("El ID es nulo...")
-        } else {
-            val username = ui.entrada("Ingrese el nuevo nombre de usuario: ")
-            try {
-                val actualizado = servicio.actualizarUsuario(username, idUsuario)
-                if (actualizado) {
-                    ui.mostrar("Usuario actualizado con éxito!")
-                } else {
-                    ui.mostrar("No se encontró un usuario con ese ID.")
+        while (!salirModificar){
+            ui.saltoLinea()
+            val idUsuario = ui.entrada("Ingrese el ID del usuario a modificar: ").toIntOrNull()
+
+            if (idUsuario == null){
+                ui.mostrarError("El ID es nulo...")
+            } else {
+                val username = ui.entrada("Ingrese el nuevo nombre de usuario: ")
+                try {
+                    val actualizado = servicio.actualizarUsuario(username, idUsuario)
+                    if (actualizado) {
+                        ui.mostrar("Usuario actualizado con éxito!")
+                    } else {
+                        ui.mostrar("No se encontró un usuario con ese ID.")
+                    }
+                } catch (e: IllegalArgumentException) {
+                    ui.mostrarError("Argumentos inválidos: ${e.message}")
+                } catch (e: SQLException) {
+                    ui.mostrarError("Error al modificar el nombre: ${e.message}")
+                } catch (e: Exception) {
+                    ui.mostrarError("Error inesperado: ${e.message}")
                 }
-            } catch (e: IllegalArgumentException) {
-                ui.mostrarError("Argumentos inválidos: ${e.message}")
-            } catch (e: SQLException) {
-                ui.mostrarError("Error al modificar el nombre: ${e.message}")
-            } catch (e: Exception) {
-                ui.mostrarError("Error inesperado: ${e.message}")
+            }
+
+            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            if (pregunta == "n"){
+                salirModificar = true
             }
         }
     }
