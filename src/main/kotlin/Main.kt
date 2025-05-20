@@ -18,7 +18,6 @@ import es.prog2425.ejerciciosBD9_1.service.UsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.UI
 
 //Meter Transacciones
-//Historial de acciones
 
 /**
  * Función principal del programa
