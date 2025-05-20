@@ -124,6 +124,7 @@ class LineaPedidosManager(
             var contador = 1
             while (contador <= entrada){
                 contador++
+                ui.saltoLinea()
                 val cantidad = ui.entrada("Ingrese la cantidad de la nueva línea de pedidos: ").toIntOrNull()
                 val precio = ui.entrada("Ingrese el precio de la nueva línea de pedidos: ").toDoubleOrNull()
                 val idPedido = ui.entrada("Ingrese el ID del pedido relacionado: ").toIntOrNull()

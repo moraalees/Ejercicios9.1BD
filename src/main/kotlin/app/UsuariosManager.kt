@@ -112,6 +112,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
             var contador = 1
             while (contador <= entrada){
                 contador ++
+                ui.saltoLinea()
                 val nombreUsuario = ui.entrada("Ingrese el nombre del nuevo usuario: ")
                 val correoUsuario = ui.entrada("Ingrese el E-mail del nuevo usuario: ")
 

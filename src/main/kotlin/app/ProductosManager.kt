@@ -112,6 +112,7 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
             var contador = 1
             while (contador <= entrada){
                 contador ++
+                ui.saltoLinea()
                 val nombre = ui.entrada("Ingrese el nombre del nuevo producto: ")
                 val precio = ui.entrada("Ingrese el precio del nuevo producto: ").toDoubleOrNull()
                 val stock = ui.entrada("Ingrese el stock del nuevo producto: ").toIntOrNull()

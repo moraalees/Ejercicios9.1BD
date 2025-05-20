@@ -121,6 +121,7 @@ class PedidosManager(
             var contador = 1
             while (contador <= entrada){
                 contador++
+                ui.saltoLinea()
                 val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
                 val idUsuario = ui.entrada("Ingrese el ID del usuario relacionado: ").toIntOrNull()
                 if (precio == null || idUsuario == null){
