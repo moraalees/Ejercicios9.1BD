@@ -31,10 +31,31 @@ empieza el programa.
 
 ---
 
+## Flujo del Programa
+
+1. Se inicializan en el `Main` los objetos DAO, los servicios correspondientes y la consola. Más adelante, todos estos se inyectan en una llamada a la clase `ProgramaManager`, que inicia la aplicación.
+2. El usuario interactúa con el menú gracias a la consola, eligiendo sobre qué entidad desea manipular datos. Según su decisión, podrá acceder a los otros Manager (App) y ahí se abrirá otro menú, diferente en cada caso.
+3. Suponiendo que entró al menú de `UsuariosManager`, podrá elegir entre varias opciones, ya sean agregar un usuario, modificar algún dato o simplemente eliminarlo.
+4. Si decidió agregar un usuario, se llama a otra función de `UsuariosManager`, pidiendo que se ingresen los datos necesarios para añadirlo.
+5. Una vez ingresados, se llama al servicio para validar dichos datos.
+6. Cuando ya han sido validados, si no salta ningún error, el servicio llama al DAO para realizar la consulta necesaria (Operación CRUD) que hará que el usuario sea añadido a la BD.
+7. Para acabar, se mostrará por consola si todo fue realizado correctamente. Si no lo fue, el usuario no será añadido y la consola mostrará el error que hizo imposible dicha tarea.
+
+---
+
+## Patrón DAO
+
+Como mencioné anteriormente, este proyecto cumple con el patrón DAO. Dicho patrón de diseño estructural se utiliza para separar la lógica de acceso a datos de la lógica de negocio de una aplicación.
+
+En otras palabras, el DAO actúa como una capa intermedia entre la aplicación y la base de datos, encapsulando todas las operaciones CRUD (Create, Read, Update, Delete) sobre un tipo específico de clase o entidad. 
+
+En mi proyecto, existen las interfaces DAO que definen las operaciones necesarias para la BD. Además, implemento correctamente dichas interfaces en las clases DAO, que contienen el código real para conectarse a la BD y manipular información.
+
+---
+
 ## Por qué Data Source
 
 Tras trabajar tanto con DriverManager y con DataSource en las ramas de los ejercicios simples de la BD, me decanté finalmente por realizar el proyecto usando Data Source. Esto fue así por varios motivos:
 - Simplicidad: Tras hacer algunas funciones con ambos 'formatos', ya sea cualquiera dentro de las clases DAOH2, me percaté de la diferencia abismal de código entre estos. Esto fue gracias al uso de `.use` en Data Source, ya que se cierran las conexiones instantáneamente, cosa que en Driver Manager no pasa. El factor de que se podría haber dejado abierta la conexión o el Result Set me agobiaba, y fue por esto que preferí Data Source.
 - Control de errores: Me percaté de que al usar Data Source, me era más sencillo la validación de errores a la hora de aplicar la conexión.
 - Separación de responsabilidades: DataSource me permitió aislar la configuración de la conexión, es decir, las constantes de URL, USUARIO y PASSWORD, facilitando cualquier cambio sin necesidad de modificar el código directamente.
-
