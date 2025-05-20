@@ -1,5 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.app
 
+import es.prog2425.ejerciciosBD9_1.model.Historial
+import es.prog2425.ejerciciosBD9_1.service.IHistorialService
 import es.prog2425.ejerciciosBD9_1.service.IUsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 import java.sql.SQLException
@@ -10,7 +12,11 @@ import java.sql.SQLException
  * @param servicio Servicio que proporciona las operaciones en la BD sobre usuarios.
  * @param ui Interfaz para la interacción con el usuario.
  */
-class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEntradaSalida) {
+class UsuariosManager(
+    private val servicio: IUsuarioService,
+    private val ui: IEntradaSalida,
+    private val servicioHistorial: IHistorialService
+) {
 
     //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
@@ -66,6 +72,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
             } else {
                 usuarios.forEach { ui.mostrar("ID: ${it.id}, Nombre: ${it.nombre}, Correo: ${it.correo}") }
             }
+            servicioHistorial.agregarCampo(Historial("Se listaron los usuarios"))
         } catch (e: SQLException) {
             ui.mostrarError("Problemas al obtener usuarios: ${e.message}")
         } catch (e: Exception) {
@@ -90,8 +97,10 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
 
                     if (usuario != null) {
                         ui.mostrar("ID: ${usuario.id}, Nombre: ${usuario.nombre}, Correo: ${usuario.correo}")
+                        servicioHistorial.agregarCampo(Historial("Se consultó el usuario con ID $idUsuario"))
                     } else {
                         ui.mostrarError("El usuario no existe...")
+                        servicioHistorial.agregarCampo(Historial("Búsqueda fallida del usuario con ID $idUsuario"))
                     }
                 } catch (e: SQLException) {
                     ui.mostrarError("Problemas al buscar el usuario: ${e.message}")
@@ -130,6 +139,7 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
                     try {
                         servicio.addUsuario(nombreUsuario, correoUsuario)
                         ui.mostrar("Usuario añadido con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se añadió un nuevo usuario: $nombreUsuario, $correoUsuario"))
                     } catch (e: IllegalArgumentException) {
                         ui.mostrarError("Argumentos inválidos: ${e.message}")
                     } catch (e: Exception) {
@@ -164,8 +174,10 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
                     val eliminado = servicio.eliminarPorId(idUsuario)
                     if (eliminado) {
                         ui.mostrar("Usuario eliminado con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se eliminó el usuario con ID $idUsuario"))
                     } else {
                         ui.mostrar("No se encontró un usuario con ese ID.")
+                        servicioHistorial.agregarCampo(Historial("Error al eliminar un usuario con ID $idUsuario"))
                     }
                 } catch (e: IllegalArgumentException) {
                     ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -200,8 +212,10 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
                     val actualizado = servicio.actualizarUsuario(username, idUsuario)
                     if (actualizado) {
                         ui.mostrar("Usuario actualizado con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se modificó el nombre de usuario con ID $idUsuario"))
                     } else {
                         ui.mostrar("No se encontró un usuario con ese ID.")
+                        servicioHistorial.agregarCampo(Historial("Error al modificar el nombre de usuario con ID $idUsuario"))
                     }
                 } catch (e: IllegalArgumentException) {
                     ui.mostrarError("Argumentos inválidos: ${e.message}")

@@ -5,8 +5,9 @@ import javax.sql.DataSource
 import java.sql.Timestamp
 
 class HistorialDAOH2(private val ds: DataSource): IHistorialDAO {
-    val sql = "INSERT INTO historial (mensaje, fecha_hora) VALUES (?, ?)"
+
     override fun insertar(entry: Historial) {
+        val sql = "INSERT INTO historial (mensaje, fecha_hora) VALUES (?, ?)"
         ds.connection.use { conn ->
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, entry.mensaje)
@@ -22,7 +23,7 @@ class HistorialDAOH2(private val ds: DataSource): IHistorialDAO {
             val stmt = conn.prepareStatement(sql)
             val rs = stmt.executeQuery()
             while (rs.next()) {
-                lista.add(Historial(rs.getLong("id"), rs.getString("mensaje"), rs.getTimestamp("fecha_hora").toLocalDateTime()))
+                lista.add(Historial(rs.getString("mensaje"), rs.getTimestamp("fecha_hora").toLocalDateTime()))
             }
         }
         return lista

@@ -5,12 +5,14 @@ import es.prog2425.ejerciciosBD9_1.app.PedidosManager
 import es.prog2425.ejerciciosBD9_1.app.ProductosManager
 import es.prog2425.ejerciciosBD9_1.app.ProgramaManager
 import es.prog2425.ejerciciosBD9_1.app.UsuariosManager
+import es.prog2425.ejerciciosBD9_1.data.dao.HistorialDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.LineaPedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.PedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.ProductoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.UsuarioDAOH2
 import es.prog2425.ejerciciosBD9_1.data.db.DataSourceFactory
 import es.prog2425.ejerciciosBD9_1.data.db.Mode
+import es.prog2425.ejerciciosBD9_1.service.HistorialService
 import es.prog2425.ejerciciosBD9_1.service.LineaPedidoService
 import es.prog2425.ejerciciosBD9_1.service.PedidoService
 import es.prog2425.ejerciciosBD9_1.service.ProductoService
@@ -43,9 +45,11 @@ fun main() {
     val pedidoService = PedidoService(pedidoDao)
     val lineaDao = LineaPedidoDAOH2(dataSource)
     val lineaService = LineaPedidoService(lineaDao)
+    val historialDao = HistorialDAOH2(dataSource)
+    val historialService = HistorialService(historialDao)
 
     ProgramaManager(
-        UsuariosManager(usuarioService, consola),
+        UsuariosManager(usuarioService, consola, historialService),
         ProductosManager(productoService, consola),
         PedidosManager(pedidoService, consola ,usuarioService),
         LineaPedidosManager(lineaService, pedidoService, productoService, consola),
