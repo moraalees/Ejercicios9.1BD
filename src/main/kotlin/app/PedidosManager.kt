@@ -112,22 +112,33 @@ class PedidosManager(
      */
     private fun agregarPedido(){
         ui.saltoLinea()
-        val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
-        val idUsuario = ui.entrada("Ingrese el ID del usuario relacionado: ").toIntOrNull()
-        if (precio == null || idUsuario == null){
-            ui.mostrarError("El precio / ID de Usuario no puede ser nulo...")
+
+        val entrada = ui.entrada("Ingrese el número de productos a agregar:").toIntOrNull()
+
+        if (entrada == null || entrada < 1){
+            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
         } else {
-            val usuarioId = servicioUsuario.obtenerUsuario(idUsuario)
-            if (usuarioId == null){
-                ui.mostrarError("No existe un usuario con ese ID...")
-            } else {
-                try {
-                    servicio.addPedido(idUsuario ,precio)
-                    ui.mostrar("Pedido agregado con éxito!")
-                } catch (e: SQLException) {
-                    ui.mostrarError("Error al agregar el pedido: ${e.message}")
-                } catch (e: Exception) {
-                    ui.mostrarError("Error inesperado: ${e.message}")
+            var contador = 1
+            while (contador <= entrada){
+                contador++
+                val precio = ui.entrada("Ingrese el precio del nuevo pedido: ").toDoubleOrNull()
+                val idUsuario = ui.entrada("Ingrese el ID del usuario relacionado: ").toIntOrNull()
+                if (precio == null || idUsuario == null){
+                    ui.mostrarError("El precio / ID de Usuario no puede ser nulo...")
+                } else {
+                    val usuarioId = servicioUsuario.obtenerUsuario(idUsuario)
+                    if (usuarioId == null){
+                        ui.mostrarError("No existe un usuario con ese ID...")
+                    } else {
+                        try {
+                            servicio.addPedido(idUsuario ,precio)
+                            ui.mostrar("Pedido agregado con éxito!")
+                        } catch (e: SQLException) {
+                            ui.mostrarError("Error al agregar el pedido: ${e.message}")
+                        } catch (e: Exception) {
+                            ui.mostrarError("Error inesperado: ${e.message}")
+                        }
+                    }
                 }
             }
         }

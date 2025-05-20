@@ -103,22 +103,33 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
      */
     private fun agregarProducto(){
         ui.saltoLinea()
-        val nombre = ui.entrada("Ingrese el nombre del nuevo producto: ")
-        val precio = ui.entrada("Ingrese el precio del nuevo producto: ").toDoubleOrNull()
-        val stock = ui.entrada("Ingrese el stock del nuevo producto: ").toIntOrNull()
-        if (precio == null || stock == null) {
-            ui.mostrarError("Precio o stock inválido...")
-            return
-        }
-        try {
-            servicio.addProducto(nombre, precio, stock)
-            ui.mostrar("Producto añadido con éxito!")
-        } catch (e: IllegalArgumentException){
-            ui.mostrarError("Argumento inválido: ${e.message}")
-        } catch (e: Exception){
-            ui.mostrarError("Error inesperado: ${e.message}")
-        } catch (e: SQLException){
-            ui.mostrarError("Error al añadir el producto: ${e.message}")
+
+        val entrada = ui.entrada("Ingrese el número de productos a agregar:").toIntOrNull()
+
+        if (entrada == null || entrada < 1){
+            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
+        } else {
+            var contador = 1
+            while (contador <= entrada){
+                contador ++
+                val nombre = ui.entrada("Ingrese el nombre del nuevo producto: ")
+                val precio = ui.entrada("Ingrese el precio del nuevo producto: ").toDoubleOrNull()
+                val stock = ui.entrada("Ingrese el stock del nuevo producto: ").toIntOrNull()
+                if (precio == null || stock == null) {
+                    ui.mostrarError("Precio o stock inválido...")
+                    return
+                }
+                try {
+                    servicio.addProducto(nombre, precio, stock)
+                    ui.mostrar("Producto añadido con éxito!")
+                } catch (e: IllegalArgumentException){
+                    ui.mostrarError("Argumento inválido: ${e.message}")
+                } catch (e: Exception){
+                    ui.mostrarError("Error inesperado: ${e.message}")
+                } catch (e: SQLException){
+                    ui.mostrarError("Error al añadir el producto: ${e.message}")
+                }
+            }
         }
     }
 

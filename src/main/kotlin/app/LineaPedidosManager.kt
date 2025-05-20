@@ -115,26 +115,37 @@ class LineaPedidosManager(
      */
     private fun agregarLinea(){
         ui.saltoLinea()
-        val cantidad = ui.entrada("Ingrese la cantidad de la nueva línea de pedidos: ").toIntOrNull()
-        val precio = ui.entrada("Ingrese el precio de la nueva línea de pedidos: ").toDoubleOrNull()
-        val idPedido = ui.entrada("Ingrese el ID del pedido relacionado: ").toIntOrNull()
-        val idProducto = ui.entrada("Ingrese el ID del producto relacionado: ").toIntOrNull()
 
-        if (cantidad == null || precio == null || idPedido == null || idProducto == null){
-            ui.mostrarError("Algún dato fue inválido...")
+        val entrada = ui.entrada("Ingrese el número de productos a agregar:").toIntOrNull()
+
+        if (entrada == null || entrada < 1){
+            ui.mostrarError("El número debe de ser mayor a 0 o no nulo...")
         } else {
-            val pedidoId = servicioPedido.obtenerPorId(idPedido)
-            val productoId = servicioProducto.obtenerPorId(idProducto)
-            if (pedidoId == null || productoId == null){
-                ui.mostrarError("Un ID no existe...")
-            } else {
-                try {
-                    service.addLineaPedido(idPedido, idProducto, cantidad, precio)
-                    ui.mostrar("Línea de Pedido agregada éxitosamente!")
-                } catch (e: SQLException) {
-                    ui.mostrarError("Error al agregar el pedido: ${e.message}")
-                } catch (e: Exception) {
-                    ui.mostrarError("Error inesperado: ${e.message}")
+            var contador = 1
+            while (contador <= entrada){
+                contador++
+                val cantidad = ui.entrada("Ingrese la cantidad de la nueva línea de pedidos: ").toIntOrNull()
+                val precio = ui.entrada("Ingrese el precio de la nueva línea de pedidos: ").toDoubleOrNull()
+                val idPedido = ui.entrada("Ingrese el ID del pedido relacionado: ").toIntOrNull()
+                val idProducto = ui.entrada("Ingrese el ID del producto relacionado: ").toIntOrNull()
+
+                if (cantidad == null || precio == null || idPedido == null || idProducto == null){
+                    ui.mostrarError("Algún dato fue inválido...")
+                } else {
+                    val pedidoId = servicioPedido.obtenerPorId(idPedido)
+                    val productoId = servicioProducto.obtenerPorId(idProducto)
+                    if (pedidoId == null || productoId == null){
+                        ui.mostrarError("Un ID no existe...")
+                    } else {
+                        try {
+                            service.addLineaPedido(idPedido, idProducto, cantidad, precio)
+                            ui.mostrar("Línea de Pedido agregada éxitosamente!")
+                        } catch (e: SQLException) {
+                            ui.mostrarError("Error al agregar el pedido: ${e.message}")
+                        } catch (e: Exception) {
+                            ui.mostrarError("Error inesperado: ${e.message}")
+                        }
+                    }
                 }
             }
         }
