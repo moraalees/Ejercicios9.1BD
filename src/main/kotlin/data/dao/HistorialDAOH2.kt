@@ -6,12 +6,12 @@ import java.sql.Timestamp
 
 class HistorialDAOH2(private val ds: DataSource): IHistorialDAO {
 
-    override fun insertar(entry: Historial) {
+    override fun insertar(entrada: Historial) {
         val sql = "INSERT INTO historial (mensaje, fecha_hora) VALUES (?, ?)"
         ds.connection.use { conn ->
             val stmt = conn.prepareStatement(sql)
-            stmt.setString(1, entry.mensaje)
-            stmt.setTimestamp(2, Timestamp.valueOf(entry.fechaHora))
+            stmt.setString(1, entrada.mensaje)
+            stmt.setTimestamp(2, Timestamp.valueOf(entrada.fechaHora))
             stmt.executeUpdate()
         }
     }

@@ -20,13 +20,13 @@ class PedidosManager(
     private val servicioUsuario: IUsuarioService,
     private val servicioHistorial: IHistorialService
 ) {
-    //Variable Boolean que simula cuando se debe de salir del menú
-    private var salir = false
 
     /**
      * Inicia el bucle del menú principal para la gestión de pedidos.
      */
     fun programaPedidos(){
+        var salir = false
+
         while (!salir) {
             ui.limpiarPantalla(10)
             mostrarMenu()
@@ -40,7 +40,7 @@ class PedidosManager(
                 "5", "actu"      -> actualizarPrecio()
                 "6", "importe"   -> obtenerImporte()
                 "7", "username"  -> pedidosPorUsuario()
-                "8", "salir"     -> salirPrograma()
+                "8", "salir"     -> salir = salirPrograma()
                 else -> ui.mostrarError("Opción inválida...")
             }
             ui.pausa()
@@ -318,9 +318,9 @@ class PedidosManager(
     /**
      * Finaliza el programa y sale del menú de gestión de pedidos.
      */
-    private fun salirPrograma(){
+    private fun salirPrograma(): Boolean{
         ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")
-        salir = true
+        return true
     }
 }

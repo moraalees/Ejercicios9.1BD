@@ -16,16 +16,17 @@ class ProgramaManager(
     private val managerProductos: ProductosManager,
     private val managerPedidos: PedidosManager,
     private val managerLineas: LineaPedidosManager,
+    private val managerHistorial: HistorialManager,
     private val ui: IEntradaSalida
 ) {
-    //Variable Boolean que simula cuando se debe de salir del menú
-    private var salir = false
 
     /**
      * Inicia el programa principal, mostrando el menú y
      * permitiendo navegar por los diferentes módulos.
      */
     fun programa(){
+        var salir = false
+
         while (!salir) {
             ui.limpiarPantalla(10)
             mostrarMenu()
@@ -36,7 +37,8 @@ class ProgramaManager(
                 "2", "productos" -> managerProductos.programaProductos()
                 "3", "pedidos" -> managerPedidos.programaPedidos()
                 "4", "lineas" -> managerLineas.programaLineaPedidos()
-                "6", "salir" -> salirPrograma()
+                "5", "historial" -> managerHistorial.programaHistorial()
+                "6", "salir" -> salir = salirPrograma()
                 else -> ui.mostrarError("Opción no válida...")
             }
         }
@@ -60,9 +62,9 @@ class ProgramaManager(
     /**
      * Marca la bandera de salida y muestra un mensaje de cierre del programa.
      */
-    private fun salirPrograma(){
+    private fun salirPrograma(): Boolean{
         ui.saltoLinea()
         ui.mostrar("Saliendo del programa...")
-        salir = true
+        return true
     }
 }

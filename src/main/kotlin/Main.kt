@@ -1,5 +1,6 @@
 package es.prog2425.ejerciciosBD9_1
 
+import es.prog2425.ejerciciosBD9_1.app.HistorialManager
 import es.prog2425.ejerciciosBD9_1.app.LineaPedidosManager
 import es.prog2425.ejerciciosBD9_1.app.PedidosManager
 import es.prog2425.ejerciciosBD9_1.app.ProductosManager
@@ -50,8 +51,9 @@ fun main() {
 
     ProgramaManager(
         UsuariosManager(usuarioService, consola, historialService),
-        ProductosManager(productoService, consola),
-        PedidosManager(pedidoService, consola ,usuarioService),
-        LineaPedidosManager(lineaService, pedidoService, productoService, consola),
+        ProductosManager(productoService, consola, historialService),
+        PedidosManager(pedidoService, consola ,usuarioService, historialService),
+        LineaPedidosManager(lineaService, pedidoService, productoService, consola, historialService),
+        HistorialManager(historialService, consola),
         consola).programa()
 }

@@ -17,14 +17,14 @@ class ProductosManager(
     private val ui: IEntradaSalida,
     private val servicioHistorial: IHistorialService
 ) {
-    //Variable Boolean que simula cuando se debe de salir del menú
-    private var salir = false
 
     /**
      * Inicia el ciclo principal del programa de productos.
      * Muestra el menú y responde a la opción seleccionada por el usuario.
      */
     fun programaProductos(){
+        var salir = false
+
         while (!salir) {
             ui.limpiarPantalla(10)
             mostrarMenu()
@@ -36,7 +36,7 @@ class ProductosManager(
                 "3", "agregar" -> agregarProducto()
                 "4", "delete" -> eliminarProducto()
                 "5", "actu" -> actualizarPrecio()
-                "6", "salir" -> salirPrograma()
+                "6", "salir" -> salir = salirPrograma()
                 else -> ui.mostrarError("Opción inválida...")
             }
             ui.pausa()
@@ -243,9 +243,9 @@ class ProductosManager(
     /**
      * Sale del programa de gestión de productos.
      */
-    private fun salirPrograma(){
+    private fun salirPrograma(): Boolean{
         ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")
-        salir = true
+        return true
     }
 }

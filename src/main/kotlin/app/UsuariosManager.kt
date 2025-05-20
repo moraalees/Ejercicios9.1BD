@@ -18,13 +18,12 @@ class UsuariosManager(
     private val servicioHistorial: IHistorialService
 ) {
 
-    //Variable Boolean que simula cuando se debe de salir del menú
-    private var salir = false
-
     /**
     * Inicia el programa de gestión de usuarios, mostrando el menú principal en bucle.
     */
     fun programaUsuarios() {
+        var salir = false
+
         while (!salir) {
             ui.limpiarPantalla(10)
             mostrarMenu()
@@ -36,7 +35,7 @@ class UsuariosManager(
                 "3", "agregar"  -> agregarUsuario()
                 "4", "delete"   -> eliminarUsuario()
                 "5", "actu"     -> modificarUsuario()
-                "6", "salir"    -> salirPrograma()
+                "6", "salir"    -> salir = salirPrograma()
                 else -> ui.mostrarError("Opción inválida.")
             }
             ui.pausa()
@@ -236,9 +235,9 @@ class UsuariosManager(
     /**
      * Sale del menú de gestión de usuarios.
      */
-    private fun salirPrograma(){
+    private fun salirPrograma(): Boolean{
         ui.saltoLinea()
         ui.mostrar("Saliendo del menú...")
-        salir = true
+        return true
     }
 }

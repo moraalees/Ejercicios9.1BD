@@ -1,5 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.app
 
+import es.prog2425.ejerciciosBD9_1.model.Historial
+import es.prog2425.ejerciciosBD9_1.service.IHistorialService
 import es.prog2425.ejerciciosBD9_1.service.ILineaPedidoService
 import es.prog2425.ejerciciosBD9_1.service.IPedidoService
 import es.prog2425.ejerciciosBD9_1.service.IProductoService
@@ -18,7 +20,8 @@ class LineaPedidosManager(
     private val service: ILineaPedidoService,
     private val servicioPedido: IPedidoService,
     private val servicioProducto: IProductoService,
-    private val ui: IEntradaSalida
+    private val ui: IEntradaSalida,
+    private val servicioHistorial: IHistorialService
 ) {
 
     //Variable Boolean que simula cuando se debe de salir del menú
@@ -77,6 +80,7 @@ class LineaPedidosManager(
             } else {
                 lineas.forEach { ui.mostrar("ID: ${it.id}, Cantidad: ${it.cantidad}, Precio: ${it.precio}, ID Pedido: ${it.idPedido}, ID Producto: ${it.idProducto}")}
             }
+            servicioHistorial.agregarCampo(Historial("Se listaron las lineas"))
         } catch (e: SQLException) {
             ui.mostrarError("Problemas al obtener las líneas: ${e.message}")
         } catch (e: Exception) {
@@ -102,8 +106,9 @@ class LineaPedidosManager(
 
                     if (linea != null){
                         ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Pedido: ${linea.idPedido}, ID Producto: ${linea.idProducto}")
+                        servicioHistorial.agregarCampo(Historial("Se buscó la línea con ID $idLinea"))
                     } else {
-                        ui.mostrarError("La línea no existe...")
+                        servicioHistorial.agregarCampo(Historial("Error al buscar una linea con ID $idLinea"))
                     }
                 } catch (e: SQLException){
                     ui.mostrarError("Problemas al buscar la línea de pedidos: ${e.message}")
@@ -152,6 +157,7 @@ class LineaPedidosManager(
                             try {
                                 service.addLineaPedido(idPedido, idProducto, cantidad, precio)
                                 ui.mostrar("Línea de Pedido agregada éxitosamente!")
+                                servicioHistorial.agregarCampo(Historial("Se agregó una nueva línea"))
                             } catch (e: SQLException) {
                                 ui.mostrarError("Error al agregar el pedido: ${e.message}")
                             } catch (e: Exception) {
@@ -187,8 +193,10 @@ class LineaPedidosManager(
                     val eliminado = service.eliminarLinea(idLinea)
                     if (eliminado) {
                         ui.mostrar("Línea eliminada con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se eliminó la línea con ID $idLinea"))
                     } else {
                         ui.mostrar("No se encontró ninguna línea con ese ID...")
+                        servicioHistorial.agregarCampo(Historial("Error al eliminar una línea con ID $idLinea"))
                     }
                 } catch (e: IllegalArgumentException) {
                     ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -227,8 +235,10 @@ class LineaPedidosManager(
                         val actualizado = service.actualizarLinea(precio, idLinea)
                         if (actualizado) {
                             ui.mostrar("Línea modificada con éxito!")
+                            servicioHistorial.agregarCampo(Historial("Se modificó el precio de la línea con ID $idLinea"))
                         } else {
                             ui.mostrar("No se encontró ninguna línea con ese ID...")
+                            servicioHistorial.agregarCampo(Historial("Error al modificar una línea con ID $idLinea"))
                         }
                     } catch (e: IllegalArgumentException) {
                         ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -271,6 +281,7 @@ class LineaPedidosManager(
                             ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Producto: ${linea.idProducto}, ID Pedido: ${linea.idPedido}")
                         }
                     }
+                    servicioHistorial.agregarCampo(Historial("Se listaron las líneas según el pedido con ID $idPedido"))
                 } catch (e: SQLException) {
                     ui.mostrarError("Error al consultar las líneas: ${e.message}")
                 } catch (e: Exception) {
