@@ -30,13 +30,13 @@ class ProgramaManager(
             ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
-            val entrada = ui.entrada("Elige una opción:")
+            val entrada = ui.entrada("Elige una opción (o escribe):").trim()
             when (entrada){
-                "1" -> managerUsuarios.programaUsuarios()
-                "2" -> managerProductos.programaProductos()
-                "3" -> managerPedidos.programaPedidos()
-                "4" -> managerLineas.programaLineaPedidos()
-                "5" -> salirPrograma()
+                "1", "usuarios" -> managerUsuarios.programaUsuarios()
+                "2", "productos" -> managerProductos.programaProductos()
+                "3", "pedidos" -> managerPedidos.programaPedidos()
+                "4", "lineas" -> managerLineas.programaLineaPedidos()
+                "6", "salir" -> salirPrograma()
                 else -> ui.mostrarError("Opción no válida...")
             }
         }
@@ -52,7 +52,8 @@ class ProgramaManager(
             2. Productos
             3. Pedidos
             4. Líneas de Pedidos
-            5. Salir
+            5. Historial
+            6. Salir
         """.trimIndent())
     }
 

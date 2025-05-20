@@ -1,5 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.app
 
+import es.prog2425.ejerciciosBD9_1.model.Historial
+import es.prog2425.ejerciciosBD9_1.service.IHistorialService
 import es.prog2425.ejerciciosBD9_1.service.IProductoService
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
 import java.sql.SQLException
@@ -10,7 +12,11 @@ import java.sql.SQLException
  * @param servicio Servicio que proporciona las operaciones CRUD sobre productos.
  * @param ui Interfaz para la interacción con el usuario.
  */
-class ProductosManager(private val servicio: IProductoService, private val ui: IEntradaSalida) {
+class ProductosManager(
+    private val servicio: IProductoService,
+    private val ui: IEntradaSalida,
+    private val servicioHistorial: IHistorialService
+) {
     //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
 
@@ -48,7 +54,7 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
                 3. Añadir Producto (agregar)
                 4. Eliminar Producto Por ID (delete)
                 5. Actualizar Precio (actu)
-                6. Salir (salir)
+                6. Salir
                 """.trimIndent()
         )
     }
@@ -65,6 +71,7 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
             } else {
                 productos.forEach { ui.mostrar("ID: ${it.id}, Nombre: ${it.nombre}, Precio: ${it.precio}, Stock: ${it.stock}") }
             }
+            servicioHistorial.agregarCampo(Historial("Se listaron los productos"))
         } catch (e: SQLException) {
             ui.mostrarError("Problemas al obtener productos: ${e.message}")
         } catch (e: Exception) {
@@ -91,8 +98,10 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
 
                     if (producto != null){
                         ui.mostrar("ID: ${producto.id}, Nombre: ${producto.nombre}, Precio: ${producto.precio}, Stock: ${producto.stock}")
+                        servicioHistorial.agregarCampo(Historial("Se consultó el producto con ID $idProducto"))
                     } else {
                         ui.mostrarError("El producto no existe...")
+                        servicioHistorial.agregarCampo(Historial("Error al obtener el producto con ID $idProducto"))
                     }
                 } catch (e: SQLException){
                     ui.mostrarError("Problemas al buscar el producto: ${e.message}")
@@ -135,6 +144,7 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
                     try {
                         servicio.addProducto(nombre, precio, stock)
                         ui.mostrar("Producto añadido con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se añadió un nuevo producto: $nombre, $precio, $stock"))
                     } catch (e: IllegalArgumentException){
                         ui.mostrarError("Argumento inválido: ${e.message}")
                     } catch (e: Exception){
@@ -168,8 +178,10 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
                     val eliminado = servicio.eliminarProducto(idProducto)
                     if (eliminado) {
                         ui.mostrar("Producto eliminado con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se eliminó el producto con ID $idProducto"))
                     } else {
                         ui.mostrar("No se encontró un producto con ese ID.")
+                        servicioHistorial.agregarCampo(Historial("Error al eliminar un producto con ID $idProducto"))
                     }
                 } catch (e: IllegalArgumentException) {
                     ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -207,8 +219,10 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
                         val modificado = servicio.modificarProducto(idProducto, precio)
                         if (modificado) {
                             ui.mostrar("Producto modificado con éxito!")
+                            servicioHistorial.agregarCampo(Historial("Se modificó el precio del producto con ID $idProducto"))
                         } else {
                             ui.mostrar("No se encontró un producto con ese ID.")
+                            servicioHistorial.agregarCampo(Historial("Error al modificar el producto con ID $idProducto"))
                         }
                     } catch (e: IllegalArgumentException) {
                         ui.mostrarError("Argumentos inválidos: ${e.message}")

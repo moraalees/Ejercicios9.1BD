@@ -60,7 +60,7 @@ class LineaPedidosManager(
                 4. Eliminar Línea Por ID (delete)
                 5. Actualizar Precio (actu)
                 6. Obtener Línea por Pedido (pedido)
-                7. Salir (salir)
+                7. Salir
                 """.trimIndent()
         )
     }

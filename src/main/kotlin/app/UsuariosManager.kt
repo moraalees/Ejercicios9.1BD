@@ -215,7 +215,7 @@ class UsuariosManager(
                         servicioHistorial.agregarCampo(Historial("Se modificó el nombre de usuario con ID $idUsuario"))
                     } else {
                         ui.mostrar("No se encontró un usuario con ese ID.")
-                        servicioHistorial.agregarCampo(Historial("Error al modificar el nombre de usuario con ID $idUsuario"))
+                        servicioHistorial.agregarCampo(Historial("Error al modificar un nombre de usuario con ID $idUsuario"))
                     }
                 } catch (e: IllegalArgumentException) {
                     ui.mostrarError("Argumentos inválidos: ${e.message}")

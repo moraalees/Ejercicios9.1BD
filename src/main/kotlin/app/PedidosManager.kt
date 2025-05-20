@@ -1,5 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.app
 
+import es.prog2425.ejerciciosBD9_1.model.Historial
+import es.prog2425.ejerciciosBD9_1.service.IHistorialService
 import es.prog2425.ejerciciosBD9_1.service.IPedidoService
 import es.prog2425.ejerciciosBD9_1.service.IUsuarioService
 import es.prog2425.ejerciciosBD9_1.ui.IEntradaSalida
@@ -15,7 +17,8 @@ import java.sql.SQLException
 class PedidosManager(
     private val servicio: IPedidoService,
     private val ui: IEntradaSalida,
-    private val servicioUsuario: IUsuarioService
+    private val servicioUsuario: IUsuarioService,
+    private val servicioHistorial: IHistorialService
 ) {
     //Variable Boolean que simula cuando se debe de salir del menú
     private var salir = false
@@ -57,7 +60,7 @@ class PedidosManager(
                 5. Actualizar Precio (actu)
                 6. Obtener Importe Total de Usuario (importe)
                 7. Obtener Pedidos por Usuario (username)
-                8. Salir (salir)
+                8. Salir
                 """.trimIndent()
         )
     }
@@ -74,6 +77,7 @@ class PedidosManager(
             } else {
                 pedidos.forEach { ui.mostrar("ID: ${it.id}, Precio: ${it.precioTotal}, ID Usuario: ${it.idUsuario}")}
             }
+            servicioHistorial.agregarCampo(Historial("Se listaron los pedidos"))
         } catch (e: SQLException) {
             ui.mostrarError("Problemas al obtener pedidos: ${e.message}")
         } catch (e: Exception) {
@@ -99,8 +103,10 @@ class PedidosManager(
 
                     if (pedido != null){
                         ui.mostrar("ID: ${pedido.id}, Precio: ${pedido.precioTotal}, ID Usuario: ${pedido.idUsuario}")
+                        servicioHistorial.agregarCampo(Historial("Se consultó el pedido con ID $idPedido"))
                     } else {
                         ui.mostrarError("El pedido no existe...")
+                        servicioHistorial.agregarCampo(Historial("Error al obtener el pedido con ID $idPedido"))
                     }
                 } catch (e: SQLException){
                     ui.mostrarError("Problemas al buscar el pedido: ${e.message}")
@@ -146,6 +152,7 @@ class PedidosManager(
                             try {
                                 servicio.addPedido(idUsuario ,precio)
                                 ui.mostrar("Pedido agregado con éxito!")
+                                servicioHistorial.agregarCampo(Historial("Se agregó un pedido: $precio, $idUsuario"))
                             } catch (e: SQLException) {
                                 ui.mostrarError("Error al agregar el pedido: ${e.message}")
                             } catch (e: Exception) {
@@ -179,8 +186,10 @@ class PedidosManager(
                     val eliminado = servicio.eliminarPedidoConLinea(idPedido)
                     if (eliminado) {
                         ui.mostrar("Pedido eliminado con éxito!")
+                        servicioHistorial.agregarCampo(Historial("Se eliminó el pedido con ID $idPedido"))
                     } else {
                         ui.mostrar("No se encontró un pedido con ese ID...")
+                        servicioHistorial.agregarCampo(Historial("Error al eliminar un pedido con ID $idPedido"))
                     }
                 } catch (e: IllegalArgumentException) {
                     ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -219,8 +228,10 @@ class PedidosManager(
                         val modificado = servicio.actualizarPedido(precio, idPedido)
                         if (modificado) {
                             ui.mostrar("Pedido modificado con éxito!")
+                            servicioHistorial.agregarCampo(Historial("Se modificó el precio del pedido con ID $idPedido"))
                         } else {
                             ui.mostrar("No se encontró un pedido con ese ID.")
+                            servicioHistorial.agregarCampo(Historial("Error al modificar un pedido con ID $idPedido"))
                         }
                     } catch (e: IllegalArgumentException) {
                         ui.mostrarError("Argumentos inválidos: ${e.message}")
@@ -254,6 +265,7 @@ class PedidosManager(
                 try {
                     val total = servicio.obtenerImportePedidosPorUsuario(idUsuario)
                     ui.mostrar("El importe total de pedidos para el usuario $idUsuario es: $total.")
+                    servicioHistorial.agregarCampo(Historial("Se buscó el importe de los pedidos del usuario con ID $idUsuario"))
                 } catch (e: SQLException) {
                     ui.mostrarError("Error al consultar el importe total: ${e.message}")
                 } catch (e: Exception) {
