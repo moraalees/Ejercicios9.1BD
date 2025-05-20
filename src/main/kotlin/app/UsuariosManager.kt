@@ -23,14 +23,14 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
             ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
-            val entrada = ui.entrada("Elige una opción:")
+            val entrada = ui.entrada("Elige una opción (o escribe):").trim()
             when (entrada) {
-                "1" -> mostrarUsuarios()
-                "2" -> buscarUsuario()
-                "3" -> agregarUsuario()
-                "4" -> eliminarUsuario()
-                "5" -> modificarUsuario()
-                "6" -> salirPrograma()
+                "1", "list"     -> mostrarUsuarios()
+                "2", "busca"    -> buscarUsuario()
+                "3", "agregar"  -> agregarUsuario()
+                "4", "delete"   -> eliminarUsuario()
+                "5", "actu"     -> modificarUsuario()
+                "6", "salir"    -> salirPrograma()
                 else -> ui.mostrarError("Opción inválida.")
             }
             ui.pausa()
@@ -44,11 +44,11 @@ class UsuariosManager(private val servicio: IUsuarioService, private val ui: IEn
         ui.mostrar(
             """
                 ----MENÚ USUARIOS----
-                1. Listar Usuarios
-                2. Buscar Usuario por ID
-                3. Añadir Usuario
-                4. Eliminar Usuario Por ID
-                5. Actualizar Username
+                1. Listar Usuarios (list)
+                2. Buscar Usuario por ID (busca)
+                3. Añadir Usuario (agregar)
+                4. Eliminar Usuario Por ID (delete)
+                5. Actualizar Username (actu)
                 6. Salir
                 """.trimIndent()
         )

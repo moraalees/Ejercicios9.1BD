@@ -23,14 +23,14 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
             ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
-            val entrada = ui.entrada("Elige una opción:")
+            val entrada = ui.entrada("Elige una opción (o escribe):")
             when (entrada){
-                "1" -> mostrarProductos()
-                "2" -> obtenerProducto()
-                "3" -> agregarProducto()
-                "4" -> eliminarProducto()
-                "5" -> actualizarPrecio()
-                "6" -> salirPrograma()
+                "1", "list" -> mostrarProductos()
+                "2", "busca" -> obtenerProducto()
+                "3", "agregar" -> agregarProducto()
+                "4", "delete" -> eliminarProducto()
+                "5", "actu" -> actualizarPrecio()
+                "6", "salir" -> salirPrograma()
                 else -> ui.mostrarError("Opción inválida...")
             }
             ui.pausa()
@@ -43,12 +43,12 @@ class ProductosManager(private val servicio: IProductoService, private val ui: I
     private fun mostrarMenu(){
         ui.mostrar("""
                 ----MENÚ PRODUCTOS----
-                1. Listar Productos
-                2. Buscar Producto por ID
-                3. Añadir Producto
-                4. Eliminar Producto Por ID
-                5. Actualizar Precio
-                6. Salir
+                1. Listar Productos (list)
+                2. Buscar Producto por ID (busca)
+                3. Añadir Producto (agregar)
+                4. Eliminar Producto Por ID (delete)
+                5. Actualizar Precio (actu)
+                6. Salir (salir)
                 """.trimIndent()
         )
     }

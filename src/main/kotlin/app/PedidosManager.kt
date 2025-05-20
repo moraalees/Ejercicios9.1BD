@@ -28,16 +28,16 @@ class PedidosManager(
             ui.limpiarPantalla(10)
             mostrarMenu()
             ui.saltoLinea()
-            val entrada = ui.entrada("Elige una opción:")
+            val entrada = ui.entrada("Elige una opción (o escribe):").trim()
             when (entrada){
-                "1" -> mostrarPedidos()
-                "2" -> obtenerProducto()
-                "3" -> agregarPedido()
-                "4" -> eliminarPedido()
-                "5" -> actualizarPrecio()
-                "6" -> obtenerImporte()
-                "7" -> pedidosPorUsuario()
-                "8" -> salirPrograma()
+                "1", "list"      -> mostrarPedidos()
+                "2", "busca"     -> obtenerProducto()
+                "3", "agregar"   -> agregarPedido()
+                "4", "delete"    -> eliminarPedido()
+                "5", "actu"      -> actualizarPrecio()
+                "6", "importe"   -> obtenerImporte()
+                "7", "username"  -> pedidosPorUsuario()
+                "8", "salir"     -> salirPrograma()
                 else -> ui.mostrarError("Opción inválida...")
             }
             ui.pausa()
@@ -50,14 +50,14 @@ class PedidosManager(
     private fun mostrarMenu(){
         ui.mostrar("""
                 ----MENÚ PEDIDOS----
-                1. Listar Pedidos
-                2. Buscar Pedido por ID
-                3. Añadir Pedido
-                4. Eliminar Pedido Por ID
-                5. Actualizar Precio
-                6. Obtener Importe Total de Usuario
-                7. Obtener Pedidos por Usuario
-                8. Salir
+                1. Listar Pedidos (list)
+                2. Buscar Pedido por ID (busca)
+                3. Añadir Pedido (agregar)
+                4. Eliminar Pedido Por ID (delete)
+                5. Actualizar Precio (actu)
+                6. Obtener Importe Total de Usuario (importe)
+                7. Obtener Pedidos por Usuario (username)
+                8. Salir (salir)
                 """.trimIndent()
         )
     }

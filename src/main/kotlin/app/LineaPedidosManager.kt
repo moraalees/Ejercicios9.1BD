@@ -35,17 +35,34 @@ class LineaPedidosManager(
             ui.saltoLinea()
             val entrada = ui.entrada("Elige una opción:")
             when (entrada){
-                "1" -> mostrarLineas()
-                "2" -> obtenerLinea()
-                "3" -> agregarLinea()
-                "4" -> eliminarLinea()
-                "5" -> actualizarLinea()
-                "6" -> obtenerLineaPorPedido()
-                "7" -> salirPrograma()
+                "1", "list" -> mostrarLineas()
+                "2", "busca" -> obtenerLinea()
+                "3", "agregar" -> agregarLinea()
+                "4", "delete" -> eliminarLinea()
+                "5", "actu" -> actualizarLinea()
+                "6", "pedido" -> obtenerLineaPorPedido()
+                "7", "salir" -> salirPrograma()
                 else -> ui.mostrarError("Opción no válida...")
             }
             ui.pausa()
         }
+    }
+
+    /**
+     * Muestra el menú principal de opciones al usuario.
+     */
+    private fun mostrarMenu(){
+        ui.mostrar("""
+                ----MENÚ LÍNEA PEDIDOS----
+                1. Listar Líneas (list)
+                2. Buscar Línea por ID (busca)
+                3. Añadir Línea (agregar)
+                4. Eliminar Línea Por ID (delete)
+                5. Actualizar Precio (actu)
+                6. Obtener Línea por Pedido (pedido)
+                7. Salir (salir)
+                """.trimIndent()
+        )
     }
 
     /**
@@ -65,23 +82,6 @@ class LineaPedidosManager(
         } catch (e: Exception) {
             ui.mostrarError("Problema inesperado: ${e.message}")
         }
-    }
-
-    /**
-     * Muestra el menú principal de opciones al usuario.
-     */
-    private fun mostrarMenu(){
-        ui.mostrar("""
-                ----MENÚ LÍNEA PEDIDOS----
-                1. Listar Líneas
-                2. Buscar Línea por ID
-                3. Añadir Línea
-                4. Eliminar Línea Por ID
-                5. Actualizar Precio
-                6. Obtener Línea por Pedido
-                7. Salir
-                """.trimIndent()
-        )
     }
 
     /**
