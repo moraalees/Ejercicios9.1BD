@@ -18,7 +18,13 @@ import java.sql.Connection
 import java.sql.SQLException
 
 fun main() {
-    InicializadorTablas.crearTablas()
+    try {
+        InicializadorTablas.crearTablas()
+    } catch (e: SQLException) {
+        println(e.message)
+    } catch (e: Exception) {
+        println(e.message)
+    }
 
     val usuarioDao = UsuarioDAOH2()
     val usuarioService = UsuarioService(usuarioDao)
@@ -33,14 +39,19 @@ fun main() {
     val pedido = Pedido(1, 160.0, 2)
     val lineaPedido = LineaPedido(1, 1, 10.0, 1, 1)
 
+    try {
+        usuarioService.addUsuario(usuario)
+        usuarioService.addUsuario("Ataulfo Rodríguez", "ataurod@mail.com")
+        usuarioService.addUsuario("Cornelio Ramírez", "Cornram@mail.com")
 
-    usuarioService.addUsuario(usuario)
-    usuarioService.addUsuario("Ataulfo Rodríguez", "ataurod@mail.com")
-    usuarioService.addUsuario("Cornelio Ramírez", "Cornram@mail.com")
-
-    productoService.addProducto(producto)
-    productoService.addProducto("Abanico", 150.0, 47)
-    productoService.addProducto("Estufa", 24.99, 1)
+        productoService.addProducto(producto)
+        productoService.addProducto("Abanico", 150.0, 47)
+        productoService.addProducto("Estufa", 24.99, 1)
+    } catch (e: SQLException) {
+        println(e.message)
+    } catch (e: Exception) {
+        println(e.message)
+    }
 
     //Inicio transaccion
     var connection: Connection? = null
@@ -58,20 +69,26 @@ fun main() {
         lineaService.addLineaPedido(3, 2, 1, 150.0)
 
         connection.commit()
+    } catch (e: SQLException){
+        println(e.message)
     } catch (e: Exception){
-        println("Error inesperado")
+        println(e.message)
         try{
             connection?.rollback()
         } catch (e: SQLException){
-            println("Error en el rollback..")
+            println("Error en el rollback: ${e.message}")
         }
     } finally {
         if (connection != null){
-            DatabaseTienda.closeConnection(connection)
+            try {
+                DatabaseTienda.closeConnection(connection)
+                println("Se cerró la conexión exitosamente.")
+            } catch (e: SQLException) {
+                println("Error al cerrar la conexión: ${e.message}")
+            } catch (e: Exception) {
+                println("Error inesperado: ${e.message}")
+            }
         }
     }
-
-
     //Fin transacción
-
 }

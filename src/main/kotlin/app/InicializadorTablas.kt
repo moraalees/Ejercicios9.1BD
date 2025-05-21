@@ -33,21 +33,40 @@ object InicializadorTablas {
      * Esta función debería llamarse una vez al inicializar la aplicación para asegurar que las tablas existen.
      */
     fun crearTablas() {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
-        try {
-            stmt = connection.createStatement()
-            for (sql in obtenerTablas()) {
-                stmt.executeUpdate(sql)
-            }
-            println("Tablas creadas correctamente.")
+        val connection = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw IllegalArgumentException("Error al crear tablas: ${e.message}")
+            throw SQLException("Error al abrir la conexión: ${e.message}")
+            null
         } catch (e: Exception) {
-            throw IllegalArgumentException("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(connection)
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        println("Conexión establecida exisotamente.")
+
+        if (connection != null){
+            var stmt: Statement? = null
+            try {
+                stmt = connection.createStatement()
+                for (sql in obtenerTablas()) {
+                    stmt.executeUpdate(sql)
+                }
+                println("Tablas creadas correctamente.")
+            } catch (e: SQLException) {
+                throw IllegalArgumentException("Error al crear tablas: ${e.message}")
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Error: ${e.message}")
+            } finally {
+                stmt?.close()
+                try {
+                    DatabaseTienda.closeConnection(connection)
+                    println("Conexión cerrada exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerra la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
         }
     }
 }
