@@ -288,7 +288,7 @@ class LineaPedidosManager(
                     ui.mostrarError("Error inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere actualizar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere obtener otra línea? (s/n)").trim()
             if (pregunta == "n"){
                 salirObtenerPedido = true
             }

@@ -109,7 +109,7 @@ class ProductosManager(
                     ui.mostrarError("Problema inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere buscar otro producto? (s/n)").trim()
             if (pregunta == "n"){
                 salirObtener = true
             }
@@ -154,7 +154,7 @@ class ProductosManager(
                     }
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere agregar otro producto? (s/n)").trim()
             if (pregunta == "n"){
                 salirAgregar = true
             }
@@ -191,7 +191,7 @@ class ProductosManager(
                     ui.mostrarError("Error inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere eliminar otro producto? (s/n)").trim()
             if (pregunta == "n"){
                 salirEliminar = true
             }
@@ -233,7 +233,7 @@ class ProductosManager(
                     }
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere actualizar el precio de otro producto? (s/n)").trim()
             if (pregunta == "n"){
                 salirActu = true
             }

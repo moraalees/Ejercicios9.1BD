@@ -107,7 +107,7 @@ class UsuariosManager(
                     ui.mostrarError("Problema inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere buscar otro usuario? (s/n)").trim()
             if (pregunta == "n"){
                 salirBuscar = true
             }
@@ -149,7 +149,7 @@ class UsuariosManager(
                 }
             }
 
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere agregar otro/s usuarios? (s/n)").trim()
             if (pregunta == "n"){
                 salirAgregar = true
             }
@@ -186,7 +186,7 @@ class UsuariosManager(
                     ui.mostrarError("Error inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere eliminar otro usuario? (s/n)").trim()
             if (pregunta == "n"){
                 salirEliminar = true
             }
@@ -225,7 +225,7 @@ class UsuariosManager(
                 }
             }
 
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere modificar otro usuario? (s/n)").trim()
             if (pregunta == "n"){
                 salirModificar = true
             }

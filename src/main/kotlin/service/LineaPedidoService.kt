@@ -1,6 +1,6 @@
 package es.prog2425.ejerciciosBD9_1.service
 
-import es.prog2425.ejerciciosBD9_1.data.dao.LineaPedidoDAOH2
+import es.prog2425.ejerciciosBD9_1.data.dao.ILineaPedidoDAO
 import es.prog2425.ejerciciosBD9_1.model.LineaPedido
 
 /**
@@ -10,7 +10,7 @@ import es.prog2425.ejerciciosBD9_1.model.LineaPedido
  *
  * @property dao Implementación de acceso a datos para [LineaPedido].
  */
-class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoService {
+class LineaPedidoService(private val dao: ILineaPedidoDAO) : ILineaPedidoService {
     /**
      * Añade una nueva línea de pedido utilizando valores individuales.
      *

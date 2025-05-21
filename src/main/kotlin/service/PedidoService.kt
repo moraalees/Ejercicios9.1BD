@@ -1,6 +1,6 @@
 package es.prog2425.ejerciciosBD9_1.service
 
-import es.prog2425.ejerciciosBD9_1.data.dao.PedidoDAOH2
+import es.prog2425.ejerciciosBD9_1.data.dao.IPedidoDAO
 import es.prog2425.ejerciciosBD9_1.model.Pedido
 
 /**
@@ -10,7 +10,7 @@ import es.prog2425.ejerciciosBD9_1.model.Pedido
  *
  * @property dao Se encarga de las operaciones sobre [Pedido].
  */
-class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
+class PedidoService(private val dao: IPedidoDAO) : IPedidoService {
 
     /**
      * Añade un nuevo [Pedido] utilizando valores individuales.

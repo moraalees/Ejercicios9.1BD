@@ -115,7 +115,7 @@ class PedidosManager(
                 }
             }
 
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere obtener otro pedido? (s/n)").trim()
             if (pregunta == "n"){
                 salirObtener = true
             }
@@ -162,7 +162,7 @@ class PedidosManager(
                     }
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere agregar otro pedido? (s/n)").trim()
             if (pregunta == "n"){
                 salirAgregar = true
             }
@@ -200,7 +200,7 @@ class PedidosManager(
                 }
             }
 
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere eliminar otro pedido? (s/n)").trim()
             if (pregunta == "n"){
                 salirEliminar = true
             }
@@ -242,7 +242,7 @@ class PedidosManager(
                     }
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere actualizar otro pedido? (s/n)").trim()
             if (pregunta == "n"){
                 salirActu = true
             }
@@ -272,7 +272,7 @@ class PedidosManager(
                     ui.mostrarError("Error inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere obtener importe de otro usuario? (s/n)").trim()
             if (pregunta == "n"){
                 salirImporte = true
             }
@@ -308,7 +308,7 @@ class PedidosManager(
                     ui.mostrarError("Error inesperado: ${e.message}")
                 }
             }
-            val pregunta = ui.entrada("¿Quiere buscar otra línea? (s/n)").trim()
+            val pregunta = ui.entrada("¿Quiere buscar otro pedido por usuario? (s/n)").trim()
             if (pregunta == "n"){
                 salirObtenerUsuario = true
             }

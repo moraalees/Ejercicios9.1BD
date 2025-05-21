@@ -1,6 +1,6 @@
 package es.prog2425.ejerciciosBD9_1.service
 
-import es.prog2425.ejerciciosBD9_1.data.dao.ProductoDAOH2
+import es.prog2425.ejerciciosBD9_1.data.dao.IProductoDAO
 import es.prog2425.ejerciciosBD9_1.model.Producto
 
 /**
@@ -10,7 +10,7 @@ import es.prog2425.ejerciciosBD9_1.model.Producto
  *
  * @property dao Instancia del DAO que proporciona acceso a la base de datos de [Producto].
  */
-class ProductoService(private val dao: ProductoDAOH2) : IProductoService {
+class ProductoService(private val dao: IProductoDAO) : IProductoService {
 
     /**
      * Añade un nuevo [Producto] al sistema con nombre, precio y stock.
