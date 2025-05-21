@@ -109,29 +109,48 @@ class ProductoDAOH2 : IProductoDAO {
      * @throws Exception Para cualquier otro tipo de error inesperado durante la operación.
      */
     override fun getAll(): List<Producto> {
-        val conn = DatabaseTienda.getConnection()
-        val listaProductos = mutableListOf<Producto>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT * FROM Producto"
-            stmt = conn.prepareStatement(sql)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                val id = rs.getInt("id")
-                val nombre = rs.getString("nombre")
-                val precio = rs.getDouble("precio")
-                val stock = rs.getInt("stock")
-                listaProductos.add(Producto(id, nombre, precio, stock))
-            }
+        val conn = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw SQLException("Error al obtener los productos: ${e.message}")
-        } catch(e: Exception) {
-            throw Exception("Error: ${e.message}")
-        }finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
+        } catch (e: Exception) {
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        val listaProductos = mutableListOf<Producto>()
+        println("Conexión exitosa.")
+        if (conn != null){
+            var stmt: PreparedStatement? = null
+            var rs: ResultSet? = null
+            try {
+                val sql = "SELECT * FROM Producto"
+                stmt = conn.prepareStatement(sql)
+                rs = stmt.executeQuery()
+                while (rs.next()) {
+                    val id = rs.getInt("id")
+                    val nombre = rs.getString("nombre")
+                    val precio = rs.getDouble("precio")
+                    val stock = rs.getInt("stock")
+                    listaProductos.add(Producto(id, nombre, precio, stock))
+                }
+            } catch (e: SQLException) {
+                throw SQLException("Error al obtener los productos: ${e.message}")
+            } catch(e: Exception) {
+                throw Exception("Error: ${e.message}")
+            }finally {
+                rs?.close()
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(conn)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
+            return listaProductos
         }
         return listaProductos
     }
