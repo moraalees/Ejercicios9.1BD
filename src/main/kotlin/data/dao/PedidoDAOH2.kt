@@ -2,6 +2,7 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.Pedido
+import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -61,6 +62,41 @@ class PedidoDAOH2 : IPedidoDAO {
         } finally {
             stmt?.close()
             DatabaseTienda.closeConnection(connection)
+        }
+    }
+
+
+    override fun insertarCampo(conn: Connection, idUsuario: Int, precio: Double) {
+        var stmt: Statement? = null
+        try{
+            val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
+            stmt = conn.prepareStatement(sql)
+            stmt.setInt(1, idUsuario)
+            stmt.setDouble(2, precio)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al insertar los campos en las tablas", e)
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+        }
+    }
+
+    override fun insertarCampo(conn: Connection, pedido: Pedido) {
+        var stmt: Statement? = null
+        try{
+            val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
+            stmt = conn.prepareStatement(sql)
+            stmt.setInt(1, pedido.idUsuario)
+            stmt.setDouble(2, pedido.precioTotal)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al insertar los campos en las tablas", e)
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
         }
     }
 
