@@ -8,6 +8,7 @@ import es.prog2425.ejerciciosBD9_1.service.LineaPedidoService
 import es.prog2425.ejerciciosBD9_1.service.PedidoService
 import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
+import java.sql.SQLException
 
 fun main() {
     val idPedido = 1
@@ -23,28 +24,39 @@ fun main() {
     val lineaPedidoDao = LineaPedidoDAOH2()
     val lineaPedidoService = LineaPedidoService(lineaPedidoDao)
 
+    try {
+        //Aquí se buscan los usuarios que han comprado un abanico
+        val usuariosProductos = usuarioService.obtenerUsuarioPorProductoComprado(productoComprado)
+        println(usuariosProductos)
+    } catch (e: SQLException) {
+        println(e.message)
+    } catch (e: IllegalArgumentException) {
+        println(e.message)
+    } catch (e: Exception) {
+        println(e.message)
+    }
 
-    //Aquí se buscan los usuarios que han comprado un abanico
-    val usuariosProductos = usuarioService.obtenerUsuarioPorProductoComprado(productoComprado)
-    println(usuariosProductos)
+    try {
+        //Aquí se busca el importe total de los pedidos por Ataulfo
+        val importeTotal = pedidoService.obtenerPedidoPorUsuario(nombre)
+        println("El importe total de pedidos por Ataulfo es de: $importeTotal")
+    } catch (e: SQLException) {
+        println(e.message)
+    } catch (e: IllegalArgumentException) {
+        println(e.message)
+    } catch (e: Exception) {
+        println(e.message)
+    }
 
-    //Aquí se busca el importe total de los pedidos por Ataulfo
-    val importeTotal = pedidoService.obtenerPedidoPorUsuario(nombre)
-    println("El importe total de pedidos por Ataulfo es de: $importeTotal")
-
-    //Aquí se buscan las líneas de pedido cuyo id es de 1
-    val lineas = lineaPedidoService.obtenerLineaPedidoByPedidoId(idPedido)
-    println(lineas)
-
-    /*
-    //Aquí hay una parte que proporcionan todos los datos de todas las tablas
-    val usuarios = usuarioService.obtenerUsuarios()
-    println(usuarios)
-    val productos = productoService.obtenerProductos()
-    println(productos)
-    val pedidos = pedidoService.obtenerPedidos()
-    println(pedidos)
-    val lineasPedido = lineaPedidoService.obtenerLineasPedido()
-    println(lineasPedido)
-    */
+    try {
+        //Aquí se buscan las líneas de pedido cuyo id es de 1
+        val lineas = lineaPedidoService.obtenerLineaPedidoByPedidoId(idPedido)
+        println(lineas)
+    } catch (e: SQLException) {
+        println(e.message)
+    } catch (e: IllegalArgumentException) {
+        println(e.message)
+    } catch (e: Exception) {
+        println(e.message)
+    }
 }
