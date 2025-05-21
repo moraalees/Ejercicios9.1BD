@@ -5,6 +5,7 @@ import es.prog2425.ejerciciosBD9_1.data.dao.LineaPedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.PedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.ProductoDAOH2
 import es.prog2425.ejerciciosBD9_1.data.dao.UsuarioDAOH2
+import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.LineaPedido
 import es.prog2425.ejerciciosBD9_1.model.Pedido
 import es.prog2425.ejerciciosBD9_1.model.Producto
@@ -13,6 +14,8 @@ import es.prog2425.ejerciciosBD9_1.service.LineaPedidoService
 import es.prog2425.ejerciciosBD9_1.service.PedidoService
 import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
+import java.sql.Connection
+import java.sql.SQLException
 
 fun main() {
     InicializadorTablas.crearTablas()
@@ -39,14 +42,36 @@ fun main() {
     productoService.addProducto("Abanico", 150.0, 47)
     productoService.addProducto("Estufa", 24.99, 1)
 
-    pedidoService.addPedido(pedido)
-    pedidoService.addPedido(1, 20.0)
-    pedidoService.addPedido(2, 150.0)
+    //Inicio transaccion
+    var connection: Connection? = null
+    try {
+        connection = DatabaseTienda.getConnection()
+        connection.autoCommit = false
 
-    lineaService.addLineaPedido(lineaPedido)
-    lineaService.addLineaPedido(1, 2, 1, 150.0)
-    lineaService.addLineaPedido(2, 1, 2, 20.0)
-    lineaService.addLineaPedido(3, 2, 1, 150.0)
+        pedidoService.addPedido(connection, pedido)
+        pedidoService.addPedido(connection, 1, 20.0)
+        pedidoService.addPedido(connection, 2, 150.0)
 
+        lineaService.addLineaPedido(lineaPedido)
+        lineaService.addLineaPedido(connection, 1, 2, 1, 150.0)
+        lineaService.addLineaPedido(2, 1, 2, 20.0)
+        lineaService.addLineaPedido(3, 2, 1, 150.0)
+
+        connection.commit()
+    } catch (e: Exception){
+        println("Error inesperado")
+        try{
+            connection?.rollback()
+        } catch (e: SQLException){
+            println("Error en el rollback..")
+        }
+    } finally {
+        if (connection != null){
+            DatabaseTienda.closeConnection(connection)
+        }
+    }
+
+
+    //Fin transacción
 
 }
