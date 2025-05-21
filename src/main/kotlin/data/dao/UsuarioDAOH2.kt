@@ -103,28 +103,47 @@ class UsuarioDAOH2 : IUsuarioDAO {
      * @throws Exception Para cualquier otro tipo de error inesperado.
      */
     override fun getAll(): List<Usuario> {
-        val conn = DatabaseTienda.getConnection()
-        val listaUsuarios = mutableListOf<Usuario>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT * FROM Usuario"
-            stmt = conn.prepareStatement(sql)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                val id = rs.getInt("id")
-                val nombre = rs.getString("nombre")
-                val email = rs.getString("email")
-                listaUsuarios.add(Usuario(id, nombre, email))
-            }
+        val conn = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw SQLException("Error al obtener los usuarios: ${e.message}")
-        } catch(e: Exception) {
-            throw Exception("Error: ${e.message}")
-        }finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
+        } catch (e: Exception) {
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        val listaUsuarios = mutableListOf<Usuario>()
+        println("Conexión exitosa.")
+        if (conn != null){
+            var stmt: PreparedStatement? = null
+            var rs: ResultSet? = null
+            try {
+                val sql = "SELECT * FROM Usuario"
+                stmt = conn.prepareStatement(sql)
+                rs = stmt.executeQuery()
+                while (rs.next()) {
+                    val id = rs.getInt("id")
+                    val nombre = rs.getString("nombre")
+                    val email = rs.getString("email")
+                    listaUsuarios.add(Usuario(id, nombre, email))
+                }
+            } catch (e: SQLException) {
+                throw SQLException("Error al obtener los usuarios: ${e.message}")
+            } catch(e: Exception) {
+                throw Exception("Error: ${e.message}")
+            }finally {
+                rs?.close()
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(conn)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
+            return listaUsuarios
         }
         return listaUsuarios
     }
@@ -138,26 +157,45 @@ class UsuarioDAOH2 : IUsuarioDAO {
      * @throws Exception Para cualquier otro tipo de error inesperado.
      */
     override fun getUsuariosByProductoComprado(nombreProducto: String): List<Usuario> {
-        val conn = DatabaseTienda.getConnection()
-        val usuarios = mutableListOf<Usuario>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT DISTINCT U.id, U.nombre, U.email FROM Usuario U JOIN Pedido P ON U.id = P.idUsuario JOIN LineaPedido LP ON P.id = LP.idPedido JOIN Producto PR ON LP.idProducto = PR.id WHERE PR.nombre = ?"
-            stmt = conn.prepareStatement(sql)
-            stmt.setString(1, nombreProducto)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                usuarios.add(Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email")))
-            }
+        val conn = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw SQLException("Error al obtener usuarios que compraron '$nombreProducto': ${e.message}")
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
         } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        val usuarios = mutableListOf<Usuario>()
+        println("Conexión exitosa.")
+        if (conn != null){
+            var stmt: PreparedStatement? = null
+            var rs: ResultSet? = null
+            try {
+                val sql = "SELECT DISTINCT U.id, U.nombre, U.email FROM Usuario U JOIN Pedido P ON U.id = P.idUsuario JOIN LineaPedido LP ON P.id = LP.idPedido JOIN Producto PR ON LP.idProducto = PR.id WHERE PR.nombre = ?"
+                stmt = conn.prepareStatement(sql)
+                stmt.setString(1, nombreProducto)
+                rs = stmt.executeQuery()
+                while (rs.next()) {
+                    usuarios.add(Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("email")))
+                }
+            } catch (e: SQLException) {
+                throw SQLException("Error al obtener usuarios que compraron '$nombreProducto': ${e.message}")
+            } catch (e: Exception) {
+                throw Exception("Error: ${e.message}")
+            } finally {
+                rs?.close()
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(conn)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
+            return usuarios
         }
         return usuarios
     }
