@@ -14,9 +14,14 @@ fun main() {
         null
     }
     if (connection != null){
-        println("Conexión exitosa")
-
-        DatabaseTienda.closeConnection(connection)
-        println("Se ha cerrado la conexión exitosamente.")
+        println("Conexión exitosa.")
+        try {
+            DatabaseTienda.closeConnection(connection)
+            println("Se ha cerrado la conexión exitósamente.")
+        } catch (e: SQLException) {
+            println("Error al cerrar la conexión: ${e.message}")
+        } catch (e: Exception) {
+            println("Error inesperado: ${e.message}")
+        }
     }
 }
