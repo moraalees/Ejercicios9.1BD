@@ -2,6 +2,7 @@ package es.prog2425.ejerciciosBD9_1.service
 
 import es.prog2425.ejerciciosBD9_1.data.dao.PedidoDAOH2
 import es.prog2425.ejerciciosBD9_1.model.Pedido
+import java.sql.Connection
 
 class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
     /**
@@ -61,5 +62,17 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
     override fun eliminarPedidoConLinea(id: Int) {
         require(id > 0) { "El id debe ser mayor que 0." }
         dao.deletePedidoConLineas(id)
+    }
+
+    override fun addPedido(conn: Connection, idUsuario: Int, precio: Double) {
+        require(idUsuario > 0){ "El ID debe ser mayor que 0." }
+        require(precio > 0){ "El precio debe ser mayor que 0." }
+        dao.insertarCampo(idUsuario, precio)
+    }
+
+    override fun addPedido(conn: Connection, pedido: Pedido) {
+        require(pedido.idUsuario > 0){ "El ID debe ser mayor que 0." }
+        require(pedido.precioTotal > 0){ "El precio debe ser mayor que 0." }
+        dao.insertarCampo(pedido.idUsuario, pedido.precioTotal)
     }
 }

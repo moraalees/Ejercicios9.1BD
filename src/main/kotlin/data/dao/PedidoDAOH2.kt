@@ -2,6 +2,7 @@ package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.data.db.DatabaseTienda
 import es.prog2425.ejerciciosBD9_1.model.Pedido
+import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -18,22 +19,40 @@ class PedidoDAOH2 : IPedidoDAO {
      * ejecuta la consulta y seguidamente maneja cualquier error que pueda surgir.
      */
     override fun insertarCampo(idUsuario: Int, precio: Double) {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
-
-        try{
-            val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
-            stmt = connection.prepareStatement(sql)
-            stmt.setInt(1, idUsuario)
-            stmt.setDouble(2, precio)
-            stmt.executeUpdate()
+        val connection = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw SQLException("Error al insertar los campos en las tablas", e)
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
         } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            stmt?.close()
-            DatabaseTienda.closeConnection(connection)
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        println("Conexión exitosa.")
+        if (connection != null){
+            var stmt: Statement? = null
+
+            try{
+                val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
+                stmt = connection.prepareStatement(sql)
+                stmt.setInt(1, idUsuario)
+                stmt.setDouble(2, precio)
+                stmt.executeUpdate()
+            } catch (e: SQLException) {
+                throw SQLException("Error al insertar los campos en las tablas", e)
+            } catch (e: Exception) {
+                throw Exception("Error: ${e.message}")
+            } finally {
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(connection)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
         }
     }
 
@@ -45,12 +64,66 @@ class PedidoDAOH2 : IPedidoDAO {
      * Funcionalmente igual que el metodo anterior, pero más limpio porque se tiene una clase con los datos agrupados.
      */
     override fun insertarCampo(pedido: Pedido) {
-        val connection = DatabaseTienda.getConnection()
-        var stmt: Statement? = null
+        val connection = try {
+            DatabaseTienda.getConnection()
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
+        } catch (e: Exception) {
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        println("Conexión exitosa.")
+        if (connection != null){
+            var stmt: Statement? = null
 
+            try{
+                val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
+                stmt = connection.prepareStatement(sql)
+                stmt.setInt(1, pedido.idUsuario)
+                stmt.setDouble(2, pedido.precioTotal)
+                stmt.executeUpdate()
+            } catch (e: SQLException) {
+                throw SQLException("Error al insertar los campos en las tablas", e)
+            } catch (e: Exception) {
+                throw Exception("Error: ${e.message}")
+            } finally {
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(connection)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
+        }
+    }
+
+
+    override fun insertarCampo(conn: Connection, idUsuario: Int, precio: Double) {
+        var stmt: Statement? = null
         try{
             val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
-            stmt = connection.prepareStatement(sql)
+            stmt = conn.prepareStatement(sql)
+            stmt.setInt(1, idUsuario)
+            stmt.setDouble(2, precio)
+            stmt.executeUpdate()
+        } catch (e: SQLException) {
+            throw SQLException("Error al insertar los campos en las tablas", e)
+        } catch (e: Exception) {
+            throw Exception("Error: ${e.message}")
+        } finally {
+            stmt?.close()
+        }
+    }
+
+    override fun insertarCampo(conn: Connection, pedido: Pedido) {
+        var stmt: Statement? = null
+        try{
+            val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
+            stmt = conn.prepareStatement(sql)
             stmt.setInt(1, pedido.idUsuario)
             stmt.setDouble(2, pedido.precioTotal)
             stmt.executeUpdate()
@@ -60,7 +133,6 @@ class PedidoDAOH2 : IPedidoDAO {
             throw Exception("Error: ${e.message}")
         } finally {
             stmt?.close()
-            DatabaseTienda.closeConnection(connection)
         }
     }
 
