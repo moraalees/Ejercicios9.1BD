@@ -108,6 +108,7 @@ class LineaPedidosManager(
                         ui.mostrar("ID: ${linea.id}, Cantidad: ${linea.cantidad}, Precio: ${linea.precio}, ID Pedido: ${linea.idPedido}, ID Producto: ${linea.idProducto}")
                         servicioHistorial.agregarCampo(Historial("Se buscó la línea con ID $idLinea"))
                     } else {
+                        ui.mostrar("No existe línea alguna con ID $idLinea")
                         servicioHistorial.agregarCampo(Historial("Error al buscar una linea con ID $idLinea"))
                     }
                 } catch (e: SQLException){

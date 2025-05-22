@@ -1,6 +1,7 @@
 package es.prog2425.ejerciciosBD9_1.data.dao
 
 import es.prog2425.ejerciciosBD9_1.model.Pedido
+import java.sql.SQLException
 import javax.sql.DataSource
 
 /**
@@ -17,12 +18,18 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
      */
     override fun insertarCampo(idUsuario: Int, precio: Double) {
         val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, idUsuario)
-                stmt.setDouble(2, precio)
-                stmt.executeUpdate()
+        try {
+            ds.connection.use { conn ->
+                conn.prepareStatement(sql).use { stmt ->
+                    stmt.setInt(1, idUsuario)
+                    stmt.setDouble(2, precio)
+                    stmt.executeUpdate()
+                }
             }
+        } catch (e: SQLException) {
+            throw e
+        } catch (e: Exception) {
+            throw e
         }
     }
 
@@ -34,17 +41,23 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
      */
     override fun getById(id: Int): Pedido? {
         val sql = "SELECT * FROM Pedido WHERE id = ?"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, id)
-                stmt.executeQuery().use { rs ->
-                    return if (rs.next()) {
-                        Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario"))
-                    } else {
-                        null
+        try {
+            ds.connection.use { conn ->
+                conn.prepareStatement(sql).use { stmt ->
+                    stmt.setInt(1, id)
+                    stmt.executeQuery().use { rs ->
+                        return if (rs.next()) {
+                            Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario"))
+                        } else {
+                            null
+                        }
                     }
                 }
             }
+        } catch (e: SQLException) {
+            throw e
+        } catch (e: Exception) {
+            throw e
         }
     }
 
@@ -56,17 +69,23 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
     override fun getAll(): List<Pedido> {
         val listaPedidos = mutableListOf<Pedido>()
         val sql = "SELECT * FROM Pedido"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.executeQuery().use { rs ->
-                    while (rs.next()) {
-                        val id = rs.getInt("id")
-                        val precio = rs.getDouble("precioTotal")
-                        val idUsuario = rs.getInt("idusuario")
-                        listaPedidos.add(Pedido(id, precio, idUsuario))
+        try {
+            ds.connection.use { conn ->
+                conn.prepareStatement(sql).use { stmt ->
+                    stmt.executeQuery().use { rs ->
+                        while (rs.next()) {
+                            val id = rs.getInt("id")
+                            val precio = rs.getDouble("precioTotal")
+                            val idUsuario = rs.getInt("idusuario")
+                            listaPedidos.add(Pedido(id, precio, idUsuario))
+                        }
                     }
                 }
             }
+        } catch (e: SQLException) {
+            throw e
+        } catch (e: Exception) {
+            throw e
         }
         return listaPedidos
     }
@@ -79,15 +98,21 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
      */
     override fun getTotalImporteById(id: Int): Double {
         val sql = "SELECT SUM(P.precioTotal) AS total FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.id = ?"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, id)
-                stmt.executeQuery().use { rs ->
-                    if (rs.next()) {
-                        return rs.getDouble("total")
+        try {
+            ds.connection.use { conn ->
+                conn.prepareStatement(sql).use { stmt ->
+                    stmt.setInt(1, id)
+                    stmt.executeQuery().use { rs ->
+                        if (rs.next()) {
+                            return rs.getDouble("total")
+                        }
                     }
                 }
             }
+        } catch (e: SQLException) {
+            throw e
+        } catch (e: Exception) {
+            throw e
         }
         return 0.0
     }
@@ -133,15 +158,28 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
     override fun getPedidosPorNombreUsuario(id: Int): List<Pedido> {
         val pedidos = mutableListOf<Pedido>()
         val sql = "SELECT P.id, P.precioTotal, P.idUsuario FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.id = ?"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, id)
-                stmt.executeQuery().use { rs ->
-                    while (rs.next()) {
-                        pedidos.add(Pedido(rs.getInt("id"), rs.getDouble("precioTotal"), rs.getInt("idUsuario")))
+
+        try {
+            ds.connection.use { conn ->
+                conn.prepareStatement(sql).use { stmt ->
+                    stmt.setInt(1, id)
+                    stmt.executeQuery().use { rs ->
+                        while (rs.next()) {
+                            pedidos.add(
+                                Pedido(
+                                    rs.getInt("id"),
+                                    rs.getDouble("precioTotal"),
+                                    rs.getInt("idUsuario")
+                                )
+                            )
+                        }
                     }
                 }
             }
+        } catch (e: SQLException) {
+            throw e
+        } catch (e: Exception) {
+            throw e
         }
         return pedidos
     }
@@ -155,13 +193,19 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
      */
     override fun updatePedido(precioTotal: Double, id: Int): Boolean {
         val sql = "UPDATE Pedido SET precioTotal = ? WHERE id = ?"
-        ds.connection.use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setDouble(1, precioTotal)
-                stmt.setInt(2, id)
-                val modificacion = stmt.executeUpdate()
-                return modificacion > 0
+        try {
+            ds.connection.use { conn ->
+                conn.prepareStatement(sql).use { stmt ->
+                    stmt.setDouble(1, precioTotal)
+                    stmt.setInt(2, id)
+                    val modificacion = stmt.executeUpdate()
+                    return modificacion > 0
+                }
             }
+        } catch (e: SQLException) {
+            throw e
+        } catch (e: Exception) {
+            throw e
         }
     }
 }
