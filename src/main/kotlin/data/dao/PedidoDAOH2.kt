@@ -17,19 +17,20 @@ class PedidoDAOH2(private val ds: DataSource) : IPedidoDAO {
      * @param precio Precio total del [Pedido].
      */
     override fun insertarCampo(idUsuario: Int, precio: Double) {
-        val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
-        try {
-            ds.connection.use { conn ->
+        ds.connection.use { conn ->
+            conn.autoCommit = false
+            try {
+                val sql = "INSERT INTO Pedido (idusuario, preciototal) VALUES (?, ?)"
                 conn.prepareStatement(sql).use { stmt ->
                     stmt.setInt(1, idUsuario)
                     stmt.setDouble(2, precio)
                     stmt.executeUpdate()
                 }
+
+            } catch (e: Exception) {
+                conn.rollback()
+                throw e
             }
-        } catch (e: SQLException) {
-            throw e
-        } catch (e: Exception) {
-            throw e
         }
     }
 
