@@ -70,7 +70,7 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         require(idProducto > 0) { "El ID debe de ser mayor que 0." }
         require(cantidad > 0) { "La cantidad debe de ser mayor que 0." }
         require(precio > 0) { "El precio debe de ser mayor que 0." }
-        dao.insertarCampo(idPedido, idProducto, cantidad, precio)
+        dao.insertarCampo(conn, idPedido, idProducto, cantidad, precio)
     }
 
     override fun addLineaPedido(conn: Connection, lineaPedido: LineaPedido) {
@@ -78,6 +78,6 @@ class LineaPedidoService(private val dao: LineaPedidoDAOH2) : ILineaPedidoServic
         require(lineaPedido.idProducto > 0) { "El ID debe de ser mayor que 0." }
         require(lineaPedido.cantidad > 0) { "La cantidad debe de ser mayor que 0." }
         require(lineaPedido.precio > 0) { "El precio debe de ser mayor que 0." }
-        dao.insertarCampo(lineaPedido.idPedido, lineaPedido.idProducto, lineaPedido.cantidad, lineaPedido.precio)
+        dao.insertarCampo(conn, lineaPedido.idPedido, lineaPedido.idProducto, lineaPedido.cantidad, lineaPedido.precio)
     }
 }

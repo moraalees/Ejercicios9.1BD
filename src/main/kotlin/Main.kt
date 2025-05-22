@@ -8,6 +8,7 @@ import es.prog2425.ejerciciosBD9_1.service.LineaPedidoService
 import es.prog2425.ejerciciosBD9_1.service.PedidoService
 import es.prog2425.ejerciciosBD9_1.service.ProductoService
 import es.prog2425.ejerciciosBD9_1.service.UsuarioService
+import java.sql.SQLException
 
 fun main() {
     val nombre = "Cornelio Ramírez"
@@ -23,10 +24,18 @@ fun main() {
     val lineaPedidoDao = LineaPedidoDAOH2()
     val lineaPedidoService = LineaPedidoService(lineaPedidoDao)
 
-    //Eliminar el usuario Cornelio
-    usuarioService.eliminarUsuario(nombre)
-    //Eliminar el producto de 24.99
-    productoService.eliminarProducto(precio)
-    //Eliminar el pedido de id 3
-    pedidoService.eliminarPedidoConLinea(id)
+
+    try{
+        //Eliminar el usuario Cornelio
+        usuarioService.eliminarUsuario(nombre)
+        //Eliminar el producto de 24.99
+        productoService.eliminarProducto(precio)
+        //Eliminar el pedido de id 3
+        pedidoService.eliminarPedidoConLinea(id)
+    } catch (e: SQLException) {
+        println(e)
+    } catch (e: Exception) {
+        println(e)
+    }
+
 }

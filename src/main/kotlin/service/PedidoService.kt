@@ -67,17 +67,17 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
     override fun addPedido(conn: Connection, idUsuario: Int, precio: Double) {
         require(idUsuario > 0){ "El ID debe ser mayor que 0." }
         require(precio > 0){ "El precio debe ser mayor que 0." }
-        dao.insertarCampo(idUsuario, precio)
+        dao.insertarCampo(conn, idUsuario, precio)
     }
 
     override fun addPedido(conn: Connection, pedido: Pedido) {
         require(pedido.idUsuario > 0){ "El ID debe ser mayor que 0." }
         require(pedido.precioTotal > 0){ "El precio debe ser mayor que 0." }
-        dao.insertarCampo(pedido.idUsuario, pedido.precioTotal)
+        dao.insertarCampo(conn, pedido.idUsuario, pedido.precioTotal)
     }
 
     override fun eliminarPedidoConLinea(conn: Connection, id: Int) {
         require(id > 0) { "El id debe ser mayor que 0." }
-        dao.deletePedidoConLineas(id)
+        dao.deletePedidoConLineas(conn, id)
     }
 }

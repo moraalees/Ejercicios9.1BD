@@ -2,6 +2,7 @@ package es.prog2425.ejerciciosBD9_1.service
 
 import es.prog2425.ejerciciosBD9_1.data.dao.UsuarioDAOH2
 import es.prog2425.ejerciciosBD9_1.model.Usuario
+import java.sql.Connection
 
 class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
     /**
@@ -62,4 +63,5 @@ class UsuarioService(private val dao: UsuarioDAOH2) : IUsuarioService {
         require(nombre.isNotBlank()){ "El nombre del usuario no puede estar vacío." }
         dao.deleteByName(nombre)
     }
+
 }
