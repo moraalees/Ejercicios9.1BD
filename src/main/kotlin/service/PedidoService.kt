@@ -75,4 +75,9 @@ class PedidoService(private val dao: PedidoDAOH2) : IPedidoService {
         require(pedido.precioTotal > 0){ "El precio debe ser mayor que 0." }
         dao.insertarCampo(pedido.idUsuario, pedido.precioTotal)
     }
+
+    override fun eliminarPedidoConLinea(conn: Connection, id: Int) {
+        require(id > 0) { "El id debe ser mayor que 0." }
+        dao.deletePedidoConLineas(id)
+    }
 }

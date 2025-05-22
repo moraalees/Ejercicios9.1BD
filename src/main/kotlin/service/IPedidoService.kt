@@ -11,4 +11,5 @@ interface IPedidoService {
     fun obtenerPedidos(): List<Pedido>
     fun obtenerPedidoPorUsuario(nombre: String): Double
     fun eliminarPedidoConLinea(id: Int)
+    fun eliminarPedidoConLinea(conn: Connection, id: Int)
 }

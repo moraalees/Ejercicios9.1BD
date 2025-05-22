@@ -144,28 +144,47 @@ class PedidoDAOH2 : IPedidoDAO {
      * @throws Exception Para cualquier otro tipo de error inesperado.
      */
     override fun getAll(): List<Pedido> {
-        val conn = DatabaseTienda.getConnection()
-        val listaPedidos = mutableListOf<Pedido>()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT * FROM Pedido"
-            stmt = conn.prepareStatement(sql)
-            rs = stmt.executeQuery()
-            while (rs.next()) {
-                val id = rs.getInt("id")
-                val precio = rs.getDouble("precioTotal")
-                val idUsuario = rs.getInt("idusuario")
-                listaPedidos.add(Pedido(id, precio, idUsuario))
-            }
+        val conn = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw SQLException("Error al obtener los pedidos: ${e.message}")
-        } catch(e: Exception) {
-            throw Exception("Error: ${e.message}")
-        }finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
+        } catch (e: Exception) {
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        val listaPedidos = mutableListOf<Pedido>()
+        println("Conexión exitosa.")
+        if (conn != null){
+            var stmt: PreparedStatement? = null
+            var rs: ResultSet? = null
+            try {
+                val sql = "SELECT * FROM Pedido"
+                stmt = conn.prepareStatement(sql)
+                rs = stmt.executeQuery()
+                while (rs.next()) {
+                    val id = rs.getInt("id")
+                    val precio = rs.getDouble("precioTotal")
+                    val idUsuario = rs.getInt("idusuario")
+                    listaPedidos.add(Pedido(id, precio, idUsuario))
+                }
+            } catch (e: SQLException) {
+                throw SQLException("Error al obtener los pedidos: ${e.message}")
+            } catch(e: Exception) {
+                throw Exception("Error: ${e.message}")
+            }finally {
+                rs?.close()
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(conn)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
+            return listaPedidos
         }
         return listaPedidos
     }
@@ -180,25 +199,43 @@ class PedidoDAOH2 : IPedidoDAO {
      * @throws Exception Para cualquier otro tipo de error inesperado.
      */
     override fun getTotalImporteByNombreUsuario(nombre: String): Double {
-        val conn = DatabaseTienda.getConnection()
-        var stmt: PreparedStatement? = null
-        var rs: ResultSet? = null
-        try {
-            val sql = "SELECT SUM(P.precioTotal) AS total FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.nombre = ?"
-            stmt = conn.prepareStatement(sql)
-            stmt.setString(1, nombre)
-            rs = stmt.executeQuery()
-            if (rs.next()) {
-                return rs.getDouble("total")
-            }
+        val conn = try {
+            DatabaseTienda.getConnection()
         } catch (e: SQLException) {
-            throw SQLException("Error al calcular el total del usuario: ${e.message}")
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
         } catch (e: Exception) {
-            throw Exception("Error: ${e.message}")
-        } finally {
-            rs?.close()
-            stmt?.close()
-            DatabaseTienda.closeConnection(conn)
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        println("Conexión exitosa.")
+        if (conn != null){
+            var stmt: PreparedStatement? = null
+            var rs: ResultSet? = null
+            try {
+                val sql = "SELECT SUM(P.precioTotal) AS total FROM Pedido P JOIN Usuario U ON P.idUsuario = U.id WHERE U.nombre = ?"
+                stmt = conn.prepareStatement(sql)
+                stmt.setString(1, nombre)
+                rs = stmt.executeQuery()
+                if (rs.next()) {
+                    return rs.getDouble("total")
+                }
+            } catch (e: SQLException) {
+                throw SQLException("Error al calcular el total del usuario: ${e.message}")
+            } catch (e: Exception) {
+                throw Exception("Error: ${e.message}")
+            } finally {
+                rs?.close()
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(conn)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
         }
         return 0.0
     }
@@ -215,7 +252,49 @@ class PedidoDAOH2 : IPedidoDAO {
      * @throws Exception Si ocurre cualquier otro tipo de error.
      */
     override fun deletePedidoConLineas(id: Int) {
-        var conn = DatabaseTienda.getConnection()
+        val conn = try {
+            DatabaseTienda.getConnection()
+        } catch (e: SQLException) {
+            throw SQLException("Error al obtener la conexión: ${e.message}")
+            null
+        } catch (e: Exception) {
+            throw Exception("Error inesperado: ${e.message}")
+            null
+        }
+        println("Conexión exitosa.")
+        if (conn != null){
+            var stmt: PreparedStatement? = null
+            try {
+                var sql = "DELETE FROM LineaPedido WHERE idPedido = ?"
+                stmt = conn.prepareStatement(sql)
+                stmt.setInt(1, id)
+                stmt.executeUpdate()
+
+                sql = "DELETE FROM Pedido WHERE id = ?"
+                stmt = conn.prepareStatement(sql)
+                stmt.setInt(1, id)
+                stmt.executeUpdate()
+
+            } catch (e: SQLException) {
+                throw SQLException("Error al eliminar el pedido con id $id: ${e.message}")
+            } catch (e: Exception) {
+                throw Exception("Error: ${e.message}")
+            } finally {
+                stmt?.close()
+                try{
+                    DatabaseTienda.closeConnection(conn)
+                    println("Se cerró la conexión exitosamente.")
+                } catch (e: SQLException) {
+                    throw SQLException("Error al cerrar la conexión: ${e.message}")
+                } catch (e: Exception) {
+                    throw Exception("Error inesperado: ${e.message}")
+                }
+            }
+        }
+
+    }
+
+    override fun deletePedidoConLineas(conn: Connection, id: Int) {
         var stmt: PreparedStatement? = null
         try {
             var sql = "DELETE FROM LineaPedido WHERE idPedido = ?"
@@ -229,12 +308,11 @@ class PedidoDAOH2 : IPedidoDAO {
             stmt.executeUpdate()
 
         } catch (e: SQLException) {
-            throw SQLException("Error al eliminar el pedido con id $id: ${e.message}")
+            throw SQLException("Error al eliminar el pedido con ID $id: ${e.message}")
         } catch (e: Exception) {
             throw Exception("Error: ${e.message}")
         } finally {
             stmt?.close()
-            DatabaseTienda.closeConnection(conn)
         }
     }
 }
