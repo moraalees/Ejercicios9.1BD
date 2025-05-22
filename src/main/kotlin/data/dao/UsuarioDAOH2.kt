@@ -219,7 +219,6 @@ class UsuarioDAOH2 : IUsuarioDAO {
             throw Exception("Error inesperado: ${e.message}")
             null
         }
-        val usuarios = mutableListOf<Usuario>()
         println("Conexión exitosa.")
         if (conn != null){
             var stmt: PreparedStatement? = null
