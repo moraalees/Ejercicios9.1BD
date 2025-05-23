@@ -55,6 +55,6 @@ En mi proyecto, existen las interfaces DAO que definen las operaciones necesaria
 ## Por qué Data Source
 
 Tras trabajar tanto con DriverManager y con DataSource en las ramas de los ejercicios simples de la BD, me decanté finalmente por realizar el proyecto usando Data Source. Esto fue así por varios motivos:
-- Simplicidad: Tras hacer algunas funciones con ambos 'formatos', ya sea cualquiera dentro de las clases DAOH2, me percaté de la diferencia abismal de código entre estos. Esto fue gracias al uso de `.use` en Data Source, ya que se cierran las conexiones instantáneamente, cosa que en Driver Manager no pasa. El factor de que se podría haber dejado abierta la conexión o el Result Set me agobiaba, y fue por esto que preferí Data Source.
-- Control de errores: Me percaté de que al usar Data Source, me era más sencillo la validación de errores a la hora de aplicar la conexión.
-- Separación de responsabilidades: DataSource me permitió aislar la configuración de la conexión, es decir, las constantes de URL, USUARIO y PASSWORD, facilitando cualquier cambio sin necesidad de modificar el código directamente.
+- `Simplicidad`: Tras hacer algunas funciones con ambos 'formatos', ya sea cualquiera dentro de las clases DAOH2, me percaté de la diferencia abismal de código entre estos. Esto fue gracias al uso de `.use` en Data Source, ya que se cierran las conexiones instantáneamente, cosa que en Driver Manager no pasa. El factor de que se podría haber dejado abierta la conexión o el Result Set me agobiaba, y fue por esto que preferí Data Source.
+- `Control de errores`: Me percaté de que al usar Data Source, me era más sencillo la validación de errores a la hora de aplicar la conexión.
+- `Separación de responsabilidades`: DataSource me permitió aislar la configuración de la conexión, es decir, las constantes de URL, USUARIO y PASSWORD, facilitando cualquier cambio sin necesidad de modificar el código directamente.
